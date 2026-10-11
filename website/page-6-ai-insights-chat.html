@@ -25,13 +25,29 @@
     .key-insights-top h3 { font-size: 1.05rem; margin-bottom: 0.2rem; }
     .key-insights-top p { font-size: 0.8rem; color: var(--text-faint); }
 
-    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; }
-    .insight-list li {
-        display: flex; gap: 0.7rem; font-size: 0.88rem; color: var(--text-dim);
-        padding: 0.8rem 1rem; background: var(--bg-alt); border-radius: 9px; border: 1px solid var(--border);
+    .insight-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .insight-item {
+        display: flex; gap: 0.85rem;
+        padding: 1rem 1.1rem; background: var(--bg-alt); border-radius: 12px; border: 1px solid var(--border);
+        transition: all 0.25s;
     }
-    .insight-list li .bullet { color: var(--purple-light); font-size: 1rem; flex-shrink: 0; }
-    .insight-list li strong { color: var(--green); }
+    .insight-item:hover { border-color: rgba(139,92,246,0.4); background: linear-gradient(135deg, rgba(139,92,246,0.07), rgba(34,211,238,0.03)); transform: translateY(-2px); }
+    .insight-item-icon {
+        width: 30px; height: 30px; min-width: 30px; border-radius: 9px;
+        background: var(--gradient-ai); display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 14px rgba(139,92,246,0.3);
+    }
+    .insight-item-body { flex: 1; min-width: 0; }
+    .insight-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.7rem; }
+    .insight-item-text { font-size: 0.88rem; color: var(--text-dim); line-height: 1.55; }
+    .insight-item-text strong { color: var(--green); }
+    .insight-confidence-badge {
+        flex-shrink: 0; font-size: 0.68rem; font-weight: 700; color: var(--purple-light);
+        background: rgba(139,92,246,0.14); border: 1px solid rgba(139,92,246,0.3);
+        padding: 0.22rem 0.6rem; border-radius: 20px; white-space: nowrap; margin-top: 0.1rem;
+    }
+    .confidence-track { height: 4px; background: rgba(139,92,246,0.12); border-radius: 3px; overflow: hidden; margin-top: 0.7rem; }
+    .confidence-fill { height: 100%; background: var(--gradient-ai); border-radius: 3px; }
 
     .action-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
     .action-card {
@@ -131,9 +147,9 @@
                     </div>
                 </div>
 
-                <ul class="insight-list" id="insightList">
+                <div class="insight-list" id="insightList">
                     <!-- Populated by JS -->
-                </ul>
+                </div>
             </div>
 
             <div class="card" style="padding: 1.8rem;">
@@ -233,16 +249,16 @@ function switchInsightTab(key, el) {
     const data = INSIGHT_TABS[key];
     document.getElementById('insightSubtitle').textContent = data.subtitle;
     document.getElementById('insightList').innerHTML = data.items.map(item => `
-        <li>
-            <span class="bullet">●</span>
-            <div style="flex:1;">
-                <div>${item.text}</div>
-                <div class="confidence-row">
-                    <div class="confidence-track"><div class="confidence-fill" style="width:${item.conf}%;"></div></div>
-                    <span class="confidence-pct">${item.conf}%</span>
+        <div class="insight-item">
+            <div class="insight-item-icon"><svg class="ai-spark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
+            <div class="insight-item-body">
+                <div class="insight-item-top">
+                    <div class="insight-item-text">${item.text}</div>
+                    <span class="insight-confidence-badge">${item.conf}% confident</span>
                 </div>
+                <div class="confidence-track"><div class="confidence-fill" style="width:${item.conf}%;"></div></div>
             </div>
-        </li>
+        </div>
     `).join('');
 }
 
