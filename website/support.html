@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Alpha — Support & Help</title>
+<link rel="stylesheet" href="shared-styles.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('modAlphaTheme') || 'dark');</script>
+<style>
+    .support-header { text-align: center; max-width: 640px; margin: 1rem auto 2.5rem; }
+    .support-header h1 { font-size: 2.1rem; margin-bottom: 0.6rem; }
+    .support-header p { color: var(--text-dim); font-size: 1rem; }
+
+    .support-contact-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+        max-width: 760px; margin: 0 auto 3rem;
+    }
+    .support-contact-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem; text-align: center; }
+    .support-contact-card .scc-icon {
+        width: 48px; height: 48px; border-radius: 12px; background: var(--bg-alt); border: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 1rem;
+    }
+    .support-contact-card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .support-contact-card p { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.2rem; }
+
+    .faq-wrap { max-width: 760px; margin: 0 auto; }
+    .faq-heading { font-size: 1.3rem; margin-bottom: 1.2rem; }
+    .faq-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.8rem; overflow: hidden; }
+    .faq-item summary {
+        padding: 1.1rem 1.3rem; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+        list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after { content: '+'; font-size: 1.3rem; color: var(--text-faint); transition: transform 0.25s; flex-shrink: 0; }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item .faq-body { padding: 0 1.3rem 1.2rem; color: var(--text-dim); font-size: 0.88rem; line-height: 1.6; }
+
+    @media (max-width: 640px) {
+        .support-contact-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="page">
+    <section class="support-header">
+        <h1>Support & Help</h1>
+        <p>We're here if you need a hand — browse the FAQs below or reach out directly.</p>
+    </section>
+
+    <section class="support-contact-grid">
+        <div class="support-contact-card">
+            <div class="scc-icon">📧</div>
+            <h3>Email Support</h3>
+            <p>Reach our team directly — we usually reply within 24 hours.</p>
+            <a href="mailto:support@modalpha.app" class="btn btn-ghost">support@modalpha.app</a>
+        </div>
+        <div class="support-contact-card">
+            <div class="scc-icon"><svg class="ai-spark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
+            <h3>Ask Mod Alpha AI</h3>
+            <p>Get instant answers on funds, SIP timing, or your subscription.</p>
+            <button class="btn btn-primary" onclick="toggleChatPanel()">Start AI Chat</button>
+        </div>
+    </section>
+
+    <section class="faq-wrap">
+        <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+        <details class="faq-item" open>
+            <summary>What exactly does Mod Alpha do?</summary>
+            <div class="faq-body">Mod Alpha analyzes historical fund data to suggest statistically better SIP investment dates each month. We never place trades — you always invest yourself, on your own broker app, based on the notification we send.</div>
+        </details>
+
+        <details class="faq-item">
+            <summary>Does Mod Alpha invest money on my behalf?</summary>
+            <div class="faq-body">No. Mod Alpha never accesses your bank or demat account and never executes trades. We only analyze public fund data and send you a notification — you decide if and when to invest, on your own broker app.</div>
+        </details>
+
+        <details class="faq-item">
+            <summary>How accurate are the AI-suggested dates?</summary>
+            <div class="faq-body">Our backtested models show the AI-suggested dates have historically reduced average entry volatility by up to 23% compared to fixed-date investing. Past performance is not a guarantee of future results.</div>
+        </details>
+
+        <details class="faq-item">
+            <summary>Can I cancel my subscription anytime?</summary>
+            <div class="faq-body">Yes. There's no lock-in — you can cancel anytime from the Subscription page, and you'll keep access until the end of your current billing period.</div>
+        </details>
+
+        <details class="faq-item">
+            <summary>Is my data and fund information secure?</summary>
+            <div class="faq-body">We only read publicly available fund data (NAV history, volatility, categories). We never ask for or store your bank, demat, or broker login credentials.</div>
+        </details>
+
+        <details class="faq-item">
+            <summary>Which brokers does Mod Alpha work with?</summary>
+            <div class="faq-body">Mod Alpha works alongside any broker or mutual fund platform you already use — we send you a notification, and you complete the investment on your own app.</div>
+        </details>
+    </section>
+</div>
+
+<script src="shared-widgets.js"></script>
+</body>
+</html>

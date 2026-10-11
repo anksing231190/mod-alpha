@@ -45,6 +45,8 @@ function navHTML() {
     <div class="topnav-links">
         <a href="page-2-fund-selection.html">Explore</a>
         <a href="page-6-ai-insights-chat.html">AI Insights</a>
+        <a href="subscription.html">Subscription</a>
+        <a href="support.html">Support</a>
     </div>
     <div class="topnav-right">
         <div class="icon-btn">🔔</div>
@@ -60,7 +62,6 @@ function navHTML() {
                     <button class="theme-opt ${theme === 'light' ? 'active' : ''}" data-theme="light"><span class="ti">☀️</span>Light</button>
                     <button class="theme-opt ${theme === 'dark' ? 'active' : ''}" data-theme="dark"><span class="ti">🌙</span>Dark</button>
                 </div>
-                <a href="subscription.html" class="user-dropdown-item">💳 Subscription</a>
                 <div class="user-dropdown-item" id="logoutItem" style="border-top: 1px solid var(--border); margin-top: 0.3rem; padding-top: 0.75rem;">🚪 Log Out</div>
             </div>
         </div>
