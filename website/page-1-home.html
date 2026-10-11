@@ -42,8 +42,8 @@
         background: var(--card); border: 1px solid var(--border); border-radius: 20px;
         padding: 2rem;
     }
-    .js-tabs { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 2.2rem; flex-wrap: wrap; }
-    .js-tab { display: flex; flex-direction: column; align-items: center; text-align: center; width: 128px; cursor: pointer; }
+    .js-tabs { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 2.2rem; }
+    .js-tab { display: flex; flex-direction: column; align-items: center; text-align: center; width: 128px; flex-shrink: 0; cursor: pointer; }
     .js-tab-icon-wrap {
         position: relative; width: 54px; height: 54px; border-radius: 15px;
         background: rgba(79,127,255,0.12); display: flex; align-items: center; justify-content: center;
@@ -57,10 +57,19 @@
     .js-tab-sub { font-size: 0.7rem; color: var(--text-faint); }
     .js-tab.active .js-tab-icon-wrap { background: var(--gradient-brand); color: #fff; box-shadow: var(--glow-blue); }
     .js-tab.active .js-tab-num { color: var(--purple-light); }
-    .js-tab-arrow { width: 56px; height: 20px; flex-shrink: 0; margin-top: 17px; }
-    .js-tab-arrow svg { width: 100%; height: 100%; overflow: visible; }
+    .js-tab-arrow {
+        flex: 1; min-width: 40px; height: 2px; margin: 26px 1rem 0; position: relative;
+        background-image: repeating-linear-gradient(to right, var(--blue) 0 8px, transparent 8px 14px);
+    }
+    .js-tab-arrow.green { background-image: repeating-linear-gradient(to right, var(--green) 0 8px, transparent 8px 14px); }
+    .js-tab-arrow::after {
+        content: ''; position: absolute; right: -1px; top: 50%; transform: translateY(-50%);
+        width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 7px solid var(--blue);
+    }
+    .js-tab-arrow.green::after { border-left-color: var(--green); }
 
     @media (max-width: 640px) {
+        .js-tabs { justify-content: center; flex-wrap: wrap; }
         .js-tab-arrow { display: none; }
         .js-tab { width: auto; }
     }
@@ -500,23 +509,13 @@
                     <div class="js-tab-title">Explore</div>
                     <div class="js-tab-sub">Browse funds</div>
                 </div>
-                <div class="js-tab-arrow">
-                    <svg viewBox="0 0 56 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="44" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
-                        <path d="M38,4 L46,10 L38,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
+                <div class="js-tab-arrow"></div>
                 <div class="js-tab">
                     <div class="js-tab-icon-wrap"><span class="js-tab-num">02</span>💳</div>
                     <div class="js-tab-title">Subscribe</div>
                     <div class="js-tab-sub">Pick a plan</div>
                 </div>
-                <div class="js-tab-arrow">
-                    <svg viewBox="0 0 56 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="44" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
-                        <path d="M38,4 L46,10 L38,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
+                <div class="js-tab-arrow green"></div>
                 <div class="js-tab">
                     <div class="js-tab-icon-wrap"><span class="js-tab-num">03</span>🔔</div>
                     <div class="js-tab-title">Get Notified</div>
