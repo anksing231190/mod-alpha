@@ -102,15 +102,14 @@ a { color: inherit; text-decoration: none; }
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: var(--gradient-brand);
+    background: #0b0b0d;
+    border: 1px solid rgba(212,175,55,0.25);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.95rem;
-    color: #fff;
-    box-shadow: var(--glow-blue);
 }
-.topnav .brand-icon svg { width: 60%; height: 60%; }
+.topnav .brand-icon svg { width: 62%; height: 62%; }
 
 .topnav-links {
     display: flex;

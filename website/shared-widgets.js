@@ -3,7 +3,7 @@
    Included on all 6 journey pages
    ============================================ */
 
-const MOD_ALPHA_LOGO_SVG = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="3.2" height="22" rx="1.2" fill="currentColor"/><rect x="24.8" y="5" width="3.2" height="22" rx="1.2" fill="currentColor"/><text x="16" y="24" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-style="italic" font-weight="700" fill="currentColor" text-anchor="middle">&#945;</text></svg>`;
+const MOD_ALPHA_LOGO_SVG = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="modAlphaGoldGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3d576"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#a9790a"/></linearGradient></defs><rect x="4" y="5" width="3.2" height="22" rx="1.2" fill="url(#modAlphaGoldGrad)"/><rect x="24.8" y="5" width="3.2" height="22" rx="1.2" fill="url(#modAlphaGoldGrad)"/><text x="16" y="24" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-style="italic" font-weight="700" fill="url(#modAlphaGoldGrad)" text-anchor="middle">&#945;</text></svg>`;
 
 function getUserName() {
     return localStorage.getItem('modAlphaUserName') || 'Investor';
