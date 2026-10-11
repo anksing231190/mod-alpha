@@ -223,6 +223,58 @@
         .hiw-step { width: 220px; }
     }
 
+    /* ===== AI ENGINE PIPELINE ===== */
+    .pipeline-card {
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 20px; padding: 2rem; margin-bottom: 1rem;
+        overflow-x: auto;
+    }
+    .pipeline-row { display: flex; align-items: center; gap: 1.2rem; min-width: 980px; }
+
+    .pipeline-inputs { display: flex; flex-direction: column; gap: 0.5rem; width: 180px; flex-shrink: 0; }
+    .pi-item {
+        display: flex; align-items: center; gap: 0.6rem;
+        background: var(--bg-alt); border: 1px solid var(--border); border-radius: 9px;
+        padding: 0.5rem 0.7rem;
+    }
+    .pi-icon { font-size: 1rem; flex-shrink: 0; }
+    .pi-title { font-size: 0.72rem; font-weight: 700; color: var(--text); line-height: 1.2; }
+    .pi-sub { font-size: 0.64rem; color: var(--text-faint); }
+
+    .pipeline-node { text-align: center; flex-shrink: 0; width: 110px; }
+    .pn-icon-wrap {
+        width: 54px; height: 54px; margin: 0 auto 0.6rem;
+        border-radius: 14px; background: rgba(79,127,255,0.12);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem;
+    }
+    .pn-icon-wrap.dark { background: var(--bg); border: 1px solid rgba(139,92,246,0.4); color: var(--purple-light); }
+    .pn-icon-wrap.dark.glow { animation: aiPulse 3s ease-in-out infinite; }
+    .pn-icon-wrap.green { background: rgba(34,197,94,0.12); }
+    .pn-label { font-size: 0.78rem; font-weight: 700; line-height: 1.3; }
+    .pn-badge {
+        font-size: 0.6rem; font-weight: 700; color: var(--purple-light);
+        background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3);
+        padding: 0.25rem 0.5rem; border-radius: 20px; margin-bottom: 0.6rem;
+        white-space: nowrap;
+    }
+
+    .pipeline-filters { display: flex; flex-direction: column; gap: 0.4rem; width: 160px; flex-shrink: 0; }
+    .pf-pill {
+        background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green);
+        font-size: 0.68rem; font-weight: 700; text-align: center;
+        padding: 0.4rem 0.5rem; border-radius: 7px;
+    }
+
+    .pipeline-arrow { width: 50px; height: 20px; flex-shrink: 0; }
+    .pipeline-arrow svg { width: 100%; height: 100%; }
+
+    .pipeline-caps {
+        display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
+        margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    }
+    .pc-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-dim); font-weight: 600; }
+
     .pricing-teaser-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
     .pricing-teaser-card { text-align: center; position: relative; }
     .pricing-teaser-card.featured { border-color: rgba(79,127,255,0.5); box-shadow: var(--glow-blue); }
@@ -444,6 +496,89 @@
                 <p>Invest on the best day, on your own broker app</p>
             </div>
         </div>
+    </section>
+
+    <!-- AI ENGINE PIPELINE -->
+    <section>
+        <h2 class="section-title">How the AI Engine Works</h2>
+        <p class="section-sub">What happens behind the scenes before you get a date notification</p>
+
+        <div class="pipeline-card">
+            <div class="pipeline-row">
+                <div class="pipeline-inputs">
+                    <div class="pi-item"><span class="pi-icon">📈</span><div><div class="pi-title">NAV History</div><div class="pi-sub">Daily, 5+ years</div></div></div>
+                    <div class="pi-item"><span class="pi-icon">⚡</span><div><div class="pi-title">Volatility Data</div><div class="pi-sub">Rolling windows</div></div></div>
+                    <div class="pi-item"><span class="pi-icon">📅</span><div><div class="pi-title">SIP Calendar</div><div class="pi-sub">Fund-ready dates</div></div></div>
+                    <div class="pi-item"><span class="pi-icon">🏷️</span><div><div class="pi-title">Fund Category</div><div class="pi-sub">Benchmark fit</div></div></div>
+                    <div class="pi-item"><span class="pi-icon">🏦</span><div><div class="pi-title">Market Holidays</div><div class="pi-sub">Trading calendar</div></div></div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <div class="pipeline-node">
+                    <div class="pn-icon-wrap">🗄️</div>
+                    <div class="pn-label">Data Center</div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <div class="pipeline-node">
+                    <div class="pn-badge">8,500+ FUNDS SCANNED DAILY</div>
+                    <div class="pn-icon-wrap dark glow">
+                        <svg class="ai-spark-icon" style="width:22px;height:22px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg>
+                    </div>
+                    <div class="pn-label">Mod Alpha<br>AI Engine</div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <div class="pipeline-filters">
+                    <div class="pf-pill">Confidence Threshold</div>
+                    <div class="pf-pill">Volatility Window</div>
+                    <div class="pf-pill">Pattern Match</div>
+                    <div class="pf-pill">Category Fit</div>
+                    <div class="pf-pill">Data Sufficiency</div>
+                    <div class="pf-pill">Date Feasibility</div>
+                </div>
+
+                <div class="pipeline-arrow">
+                    <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+
+                <div class="pipeline-node">
+                    <div class="pn-icon-wrap green">🔔</div>
+                    <div class="pn-label">Best Date<br>Alert</div>
+                </div>
+            </div>
+
+            <div class="pipeline-caps">
+                <div class="pc-item">📡 <span>Daily Fund Scans</span></div>
+                <div class="pc-item">⏱️ <span>Historical Backtesting</span></div>
+                <div class="pc-item">🧠 <span>AI/ML Pattern Engine</span></div>
+                <div class="pc-item">🎯 <span>Confidence Scoring</span></div>
+                <div class="pc-item">🔔 <span>Notification Delivery</span></div>
+            </div>
+        </div>
+
+        <p style="text-align:center; font-size:0.78rem; color:var(--text-faint); margin-top:1rem;">Mod Alpha analyzes public fund data only — it never reads your bank or demat account, and never places trades.</p>
     </section>
 
     <!-- PRICING TEASER -->
