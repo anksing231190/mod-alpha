@@ -182,6 +182,40 @@
     @keyframes typingBounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-3px); opacity: 1; } }
     @keyframes chatBubbleIn { 0% { opacity: 0; transform: translateY(4px); } 15%, 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; } }
 
+    /* ===== HOW IT WORKS STRIP ===== */
+    .hiw-card {
+        display: flex; align-items: flex-start; justify-content: center;
+        gap: 1.5rem; flex-wrap: wrap;
+        background: var(--card); border: 1px solid var(--border);
+        border-radius: 20px; padding: 2.2rem 2.5rem;
+        margin-bottom: 4rem;
+    }
+    .hiw-step { text-align: center; width: 150px; }
+    .hiw-icon-wrap {
+        position: relative; width: 56px; height: 56px; margin: 0 auto 0.9rem;
+        border-radius: 16px; background: rgba(79,127,255,0.12);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .hiw-icon-wrap.dark { background: var(--dark, #0a0e1c); border: 1px solid rgba(139,92,246,0.4); box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+    .hiw-icon-wrap.step-3 { background: rgba(34,197,94,0.12); }
+    .hiw-icon { font-size: 1.5rem; display: flex; align-items: center; justify-content: center; color: var(--purple-light); }
+    .hiw-num {
+        position: absolute; top: -10px; right: -12px;
+        font-size: 0.78rem; font-weight: 700; font-style: italic;
+        color: var(--blue-light);
+    }
+    .hiw-icon-wrap.dark .hiw-num { color: var(--purple-light); }
+    .hiw-step h4 { font-size: 0.98rem; margin-bottom: 0.3rem; }
+    .hiw-step p { font-size: 0.78rem; color: var(--text-faint); line-height: 1.4; }
+    .hiw-arrow { width: 70px; height: 20px; margin-top: 18px; flex-shrink: 0; }
+    .hiw-arrow svg { width: 100%; height: 100%; }
+
+    @media (max-width: 760px) {
+        .hiw-card { flex-direction: column; align-items: center; }
+        .hiw-arrow { transform: rotate(90deg); width: 40px; margin: 0; }
+        .hiw-step { width: 220px; }
+    }
+
     .pricing-teaser-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
     .pricing-teaser-card { text-align: center; position: relative; }
     .pricing-teaser-card.featured { border-color: rgba(79,127,255,0.5); box-shadow: var(--glow-blue); }
@@ -284,6 +318,52 @@
                         <div class="stat-lbl">MOD Alpha SIP</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section>
+        <div class="hiw-card">
+            <div class="hiw-step">
+                <div class="hiw-icon-wrap step-1">
+                    <span class="hiw-num">01</span>
+                    <div class="hiw-icon">🧭</div>
+                </div>
+                <h4>Explore</h4>
+                <p>Browse funds & track performance</p>
+            </div>
+
+            <div class="hiw-arrow">
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                    <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="hiw-step">
+                <div class="hiw-icon-wrap step-2 dark">
+                    <span class="hiw-num">02</span>
+                    <div class="hiw-icon"><svg class="ai-spark-icon" style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
+                </div>
+                <h4>Mod Alpha AI</h4>
+                <p>Analyzes fund data, picks your best SIP date</p>
+            </div>
+
+            <div class="hiw-arrow">
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                    <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="hiw-step">
+                <div class="hiw-icon-wrap step-3">
+                    <span class="hiw-num">03</span>
+                    <div class="hiw-icon">🔔</div>
+                </div>
+                <h4>Get Notified</h4>
+                <p>Invest on the best day, on your own broker app</p>
             </div>
         </div>
     </section>
