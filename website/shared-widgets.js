@@ -205,10 +205,47 @@ function sendWidgetMessage(predefined) {
     }, 1200);
 }
 
+/* ===== ACTIVITY TOAST (bottom-left, simulated — not real user events) ===== */
+const ACTIVITY_MESSAGES = [
+    { icon: '✨', text: '<strong>Someone</strong> just started a MOD Alpha SIP' },
+    { icon: '📊', text: '<strong>An investor</strong> explored Nifty 50 Index Fund performance' },
+    { icon: '📅', text: '<strong>Someone</strong> just found their best SIP date' },
+    { icon: '🤖', text: '<strong>An investor</strong> asked Mod Alpha AI a question' },
+    { icon: '💬', text: '<strong>Someone</strong> compared two mutual funds' },
+    { icon: '📈', text: '<strong>An investor</strong> ran the Time Machine on a 5-year SIP' }
+];
+
+function injectActivityToast() {
+    const mount = document.createElement('div');
+    mount.innerHTML = `
+<div id="activityToast">
+    <span id="activityToastIcon">✨</span>
+    <span id="activityToastText"></span>
+</div>`;
+    document.body.appendChild(mount);
+    scheduleActivityToast(4000);
+}
+
+function showActivityToast() {
+    const toast = document.getElementById('activityToast');
+    if (!toast) return;
+    const msg = ACTIVITY_MESSAGES[Math.floor(Math.random() * ACTIVITY_MESSAGES.length)];
+    document.getElementById('activityToastIcon').textContent = msg.icon;
+    document.getElementById('activityToastText').innerHTML = msg.text;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 5000);
+    scheduleActivityToast(16000 + Math.random() * 8000);
+}
+
+function scheduleActivityToast(delay) {
+    setTimeout(showActivityToast, delay);
+}
+
 function initPage() {
     if (!requireAuth()) return;
     injectNav();
     injectChatWidget();
+    injectActivityToast();
 }
 
 document.addEventListener('DOMContentLoaded', initPage);

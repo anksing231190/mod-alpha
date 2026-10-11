@@ -255,6 +255,10 @@
         .ai-orb-wrap { display: none; }
         .auth-stats { flex-wrap: wrap; row-gap: 0.8rem; }
         .candle-strip { height: 60px; }
+        /* Float chips are positioned by %-left + nowrap text — too narrow a stage
+           to fit them without overlap/overflow on phones, so hide them here. */
+        .float-chip { display: none; }
+        .auth-form-panel { padding: 1.8rem 1.2rem; }
     }
 </style>
 </head>
