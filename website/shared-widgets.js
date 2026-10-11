@@ -44,7 +44,6 @@ function navHTML() {
     </a>
     <div class="topnav-links">
         <a href="page-2-fund-selection.html">Explore</a>
-        <a href="page-3-performance-analytics.html">Tools</a>
         <a href="page-6-ai-insights-chat.html">AI Insights</a>
     </div>
     <div class="topnav-right">
