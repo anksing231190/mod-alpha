@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Alpha — Smarter Mutual Fund Investing with AI</title>
+<link rel="stylesheet" href="shared-styles.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('modAlphaTheme') || 'dark');</script>
+<style>
+    .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+        padding: 3rem 0 4rem;
+    }
+    .hero h1 {
+        font-size: 3rem;
+        line-height: 1.15;
+        margin-bottom: 1.2rem;
+        font-weight: 800;
+    }
+    .hero h1 .grad {
+        background: var(--gradient-ai);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero p.lead {
+        color: var(--text-dim);
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        max-width: 520px;
+    }
+    .hero-ctas { display: flex; gap: 1rem; margin-bottom: 2.5rem; }
+    .feature-strip {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border);
+    }
+    .feature-strip-item { text-align: left; }
+    .feature-strip-item .fsi-icon {
+        width: 38px; height: 38px;
+        border-radius: 9px;
+        background: var(--card-alt);
+        border: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+        margin-bottom: 0.6rem;
+    }
+    .feature-strip-item .fsi-title { font-size: 0.85rem; font-weight: 700; }
+    .feature-strip-item .fsi-sub { font-size: 0.72rem; color: var(--text-faint); }
+
+    .hero-visual {
+        position: relative;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        min-height: 420px;
+    }
+    .hero-visual::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(circle at 70% 20%, rgba(139,92,246,0.15), transparent 60%);
+        border-radius: 20px;
+        pointer-events: none;
+    }
+    .mini-chart-card {
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.2rem;
+        margin-bottom: 1.2rem;
+    }
+    .mini-chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 100px; margin-top: 1rem; }
+    .mini-bar {
+        flex: 1;
+        background: var(--gradient-brand);
+        border-radius: 4px 4px 0 0;
+        animation: growBar 1s ease-out both;
+    }
+    @keyframes growBar { from { height: 0; opacity: 0; } to { opacity: 1; } }
+
+    .logos-row { display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; padding: 2rem 0; opacity: 0.6; }
+    .logos-row span { font-size: 0.85rem; color: var(--text-faint); font-weight: 600; }
+
+    .section-title { text-align: center; margin-bottom: 0.6rem; font-size: 1.9rem; }
+    .section-sub { text-align: center; color: var(--text-dim); margin-bottom: 2.5rem; }
+
+    .journey-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+    .journey-card { position: relative; }
+    .journey-num {
+        width: 38px; height: 38px; border-radius: 10px;
+        background: var(--card-alt); border: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem; margin-bottom: 1rem;
+    }
+    .journey-card.ai .journey-num { border-color: rgba(139,92,246,0.35); background: rgba(139,92,246,0.1); }
+    .journey-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .journey-card p { font-size: 0.85rem; color: var(--text-dim); }
+
+    .pricing-teaser-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+    .pricing-teaser-card { text-align: center; position: relative; }
+    .pricing-teaser-card.featured { border-color: rgba(79,127,255,0.5); box-shadow: var(--glow-blue); }
+    .ptc-badge {
+        position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+        background: var(--gradient-brand); color: #fff; font-size: 0.65rem; font-weight: 700;
+        padding: 0.25rem 0.8rem; border-radius: 20px; text-transform: uppercase; white-space: nowrap;
+    }
+    .ptc-name { font-size: 0.9rem; font-weight: 700; color: var(--text-dim); margin-bottom: 0.5rem; }
+    .ptc-price { font-size: 1.7rem; font-weight: 800; }
+    .ptc-price span { font-size: 0.85rem; font-weight: 500; color: var(--text-faint); }
+    .ptc-sub { font-size: 0.75rem; color: var(--text-faint); margin-top: 0.3rem; }
+
+    @media (max-width: 900px) {
+        .hero { grid-template-columns: 1fr; }
+        .feature-strip { grid-template-columns: repeat(2, 1fr); }
+        .journey-grid { grid-template-columns: 1fr; }
+        .pricing-teaser-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="page">
+    <!-- HERO -->
+    <section class="hero">
+        <div>
+            <div class="eyebrow">✨ AI-Powered Mutual Fund Analytics</div>
+            <h1>Smarter Mutual Fund<br>Investing with <span class="grad">AI</span></h1>
+            <p class="lead">Explore performance, find better SIP dates, compare funds, and get AI insights to make informed investment decisions — all in one intelligent platform.</p>
+            <div class="hero-ctas">
+                <a href="page-2-fund-selection.html" class="btn btn-primary">Explore Funds →</a>
+                <a href="page-6-ai-insights-chat.html" class="btn btn-ghost">▶ See How It Works</a>
+            </div>
+            <div class="feature-strip">
+                <div class="feature-strip-item">
+                    <div class="fsi-icon">🧠</div>
+                    <div class="fsi-title">AI Insights</div>
+                    <div class="fsi-sub">Actionable analysis</div>
+                </div>
+                <div class="feature-strip-item">
+                    <div class="fsi-icon">⚖️</div>
+                    <div class="fsi-title">Compare Funds</div>
+                    <div class="fsi-sub">Side by side</div>
+                </div>
+                <div class="feature-strip-item">
+                    <div class="fsi-icon">🎯</div>
+                    <div class="fsi-title">SIP Optimizer</div>
+                    <div class="fsi-sub">MOD Alpha</div>
+                </div>
+                <div class="feature-strip-item">
+                    <div class="fsi-icon">⏰</div>
+                    <div class="fsi-title">Investment Simulator</div>
+                    <div class="fsi-sub">What if analysis</div>
+                </div>
+                <div class="feature-strip-item">
+                    <div class="fsi-icon">📡</div>
+                    <div class="fsi-title">Real-time Data</div>
+                    <div class="fsi-sub">Always up to date</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="mini-chart-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:0.85rem; color:var(--text-dim); font-weight:600;">Nifty 50 Index Fund</span>
+                    <span class="pill pill-green">+18.5%</span>
+                </div>
+                <div class="mini-chart-bars">
+                    <div class="mini-bar" style="height:40%; animation-delay:0.1s;"></div>
+                    <div class="mini-bar" style="height:55%; animation-delay:0.2s;"></div>
+                    <div class="mini-bar" style="height:45%; animation-delay:0.3s;"></div>
+                    <div class="mini-bar" style="height:70%; animation-delay:0.4s;"></div>
+                    <div class="mini-bar" style="height:60%; animation-delay:0.5s;"></div>
+                    <div class="mini-bar" style="height:85%; animation-delay:0.6s;"></div>
+                    <div class="mini-bar" style="height:75%; animation-delay:0.7s;"></div>
+                    <div class="mini-bar" style="height:100%; animation-delay:0.8s;"></div>
+                </div>
+            </div>
+            <div class="mini-chart-card">
+                <div style="font-size:0.85rem; color:var(--text-dim); font-weight:600; margin-bottom:0.8rem;">MOD Alpha vs Fixed SIP</div>
+                <div class="stat-row" style="grid-template-columns: 1fr 1fr;">
+                    <div>
+                        <div style="font-size:1.3rem; font-weight:700; color:var(--text-faint);">₹16.3L</div>
+                        <div class="stat-lbl">Fixed SIP</div>
+                    </div>
+                    <div>
+                        <div style="font-size:1.3rem; font-weight:700; color:var(--green);">₹18.9L</div>
+                        <div class="stat-lbl">MOD Alpha SIP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPLORE -->
+    <section>
+        <h2 class="section-title">Explore Mod Alpha</h2>
+        <p class="section-sub">Everything you need to make smarter SIP decisions, in one platform</p>
+
+        <div class="journey-grid">
+            <a href="page-2-fund-selection.html" class="card card-interactive journey-card">
+                <div class="journey-num">🔍</div>
+                <h3>Fund Selection & Overview</h3>
+                <p>Searchable fund selector with key info and AI-generated summary.</p>
+            </a>
+            <a href="page-3-performance-analytics.html" class="card card-interactive journey-card">
+                <div class="journey-num">📈</div>
+                <h3>Interactive Performance Analytics</h3>
+                <p>Monthly, quarterly, yearly returns with dynamic animated charts.</p>
+            </a>
+            <a href="page-4-time-machine.html" class="card card-interactive journey-card">
+                <div class="journey-num">⏰</div>
+                <h3>What If I Invested on This Date?</h3>
+                <p>Interactive investment simulator with a date picker and growth chart.</p>
+            </a>
+            <a href="page-5-mod-alpha.html" class="card card-interactive journey-card ai">
+                <div class="journey-num">🤖</div>
+                <h3>MOD Alpha — Intelligent SIP Analysis</h3>
+                <p>Compare traditional fixed-date SIP vs. AI-optimized investment dates.</p>
+            </a>
+            <a href="page-6-ai-insights-chat.html" class="card card-interactive journey-card ai">
+                <div class="journey-num">⚡</div>
+                <h3>AI Insights & Recommendations</h3>
+                <p>AI-generated insights, confidence scores, and key takeaways.</p>
+            </a>
+            <a href="page-6-ai-insights-chat.html#chat" class="card card-interactive journey-card ai">
+                <div class="journey-num">💬</div>
+                <h3>AI Chat Assistant</h3>
+                <p>Ask anything — conversational AI guidance, anytime, anywhere.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- PRICING TEASER -->
+    <section>
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-sub">Cancel anytime. No lock-in.</p>
+
+        <div class="pricing-teaser-grid">
+            <div class="card pricing-teaser-card">
+                <div class="ptc-name">Monthly</div>
+                <div class="ptc-price">₹199<span>/mo</span></div>
+                <div class="ptc-sub">Billed monthly</div>
+            </div>
+            <div class="card pricing-teaser-card featured">
+                <div class="ptc-badge">Most Popular</div>
+                <div class="ptc-name">Quarterly</div>
+                <div class="ptc-price">₹499<span>/3mo</span></div>
+                <div class="ptc-sub">≈ ₹166/mo · Save 17%</div>
+            </div>
+            <div class="card pricing-teaser-card">
+                <div class="ptc-name">Half-Yearly</div>
+                <div class="ptc-price">₹899<span>/6mo</span></div>
+                <div class="ptc-sub">≈ ₹150/mo · Save 25%</div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top: 1.8rem;">
+            <a href="subscription.html" class="btn btn-primary">View Full Pricing & Subscribe →</a>
+        </div>
+    </section>
+
+    <div class="logos-row">
+        <span>SEBI REGISTERED</span>
+        <span>•</span>
+        <span>8,500+ FUNDS TRACKED</span>
+        <span>•</span>
+        <span>12,500+ INVESTORS</span>
+        <span>•</span>
+        <span>96% AI ACCURACY</span>
+    </div>
+</div>
+
+<script src="shared-widgets.js"></script>
+</body>
+</html>

@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mod Alpha - User Journey Diagram Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7c3aed;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark-bg: #0a0e27;
+            --card-bg: #111b3c;
+            --border-color: #1e3a5f;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1e3d 100%);
+            color: var(--text-primary);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(17, 27, 60, 0.8), rgba(17, 27, 60, 0.4));
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .control-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-diagram {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .btn-diagram:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(0, 212, 255, 0.15);
+        }
+
+        .btn-diagram.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-color: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .diagram-container {
+            background: linear-gradient(135deg, rgba(17, 27, 60, 0.8), rgba(17, 27, 60, 0.4));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(10px);
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== LINEAR FLOW (Horizontal) ===== */
+        .diagram-linear {
+            display: none;
+            width: 100%;
+        }
+
+        .diagram-linear.active {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .flow-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .flow-step {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flow-step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .flow-step.ai-featured {
+            border: 2px solid var(--primary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .flow-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+        }
+
+        .flow-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-top: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .arrow {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* ===== CIRCULAR FLOW ===== */
+        .diagram-circular {
+            display: none;
+            width: 100%;
+            height: 600px;
+            position: relative;
+        }
+
+        .diagram-circular.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+        }
+
+        .circle-step {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            gap: 0.5rem;
+        }
+
+        .circle-step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .circle-step.ai-featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .circle-number {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .circle-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        /* ===== VERTICAL FLOW ===== */
+        .diagram-vertical {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .diagram-vertical.active {
+            display: flex;
+        }
+
+        .vertical-step {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            transition: all 0.3s;
+        }
+
+        .vertical-step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateX(10px);
+        }
+
+        .vertical-step.ai-featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+        }
+
+        .vertical-number {
+            min-width: 50px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .vertical-content h3 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .vertical-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .vertical-divider {
+            height: 30px;
+            margin-left: 25px;
+            border-left: 2px dashed var(--primary);
+        }
+
+        /* ===== COMPARISON TABLE ===== */
+        .diagram-table {
+            display: none;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .diagram-table.active {
+            display: block;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .comparison-table td {
+            padding: 1.5rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .comparison-table .step-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* ===== CARD GRID ===== */
+        .diagram-grid {
+            display: none;
+            width: 100%;
+        }
+
+        .diagram-grid.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(124, 58, 237, 0.1));
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .grid-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .grid-card.ai-featured {
+            border: 2px solid var(--primary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .grid-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grid-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .grid-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        .grid-description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid var(--border-color);
+        }
+
+        .legend-box.ai {
+            border: 2px solid var(--primary);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(124, 58, 237, 0.2));
+        }
+
+        .legend-box.normal {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid var(--border-color);
+        }
+
+        .legend-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .diagram-container {
+                padding: 1.5rem;
+                min-height: 400px;
+            }
+
+            .flow-row {
+                grid-template-columns: 1fr;
+            }
+
+            .circle-container {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Mod Alpha - User Journey Diagrams</h1>
+            <p>Interactive flow visualization with switchable diagram styles</p>
+        </div>
+
+        <div class="controls">
+            <span class="control-label">📊 Diagram Style:</span>
+            <button class="btn-diagram active" onclick="switchDiagram('linear')">📈 Linear Flow</button>
+            <button class="btn-diagram" onclick="switchDiagram('circular')">⭕ Circular Flow</button>
+            <button class="btn-diagram" onclick="switchDiagram('vertical')">📋 Vertical Flow</button>
+            <button class="btn-diagram" onclick="switchDiagram('table')">📑 Table View</button>
+            <button class="btn-diagram" onclick="switchDiagram('grid')">🎨 Grid View</button>
+        </div>
+
+        <!-- LINEAR FLOW DIAGRAM -->
+        <div class="diagram-container">
+            <div class="diagram-linear active">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Mod Alpha - 6 Step Journey</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Click any step to learn more</p>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="flow-step" onclick="alert('Step 1: Modern premium landing page with clear value proposition. Learn what Mod Alpha does and why investors need it.')">
+                    <div class="flow-number">1</div>
+                    <div class="flow-title">Home Page</div>
+                    <div class="flow-description">AI Powered Investment Intelligence</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Modern, premium landing page with clear value proposition</div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 2 -->
+                <div class="flow-step" onclick="alert('Step 2: Searchable fund selector showing top funds. See fund details and AI-powered summaries. Choose from 8500+ funds.')">
+                    <div class="flow-number">2</div>
+                    <div class="flow-title">Fund Selection</div>
+                    <div class="flow-description">Searchable fund selector with key info & AI summary</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Smart search, key metrics, and AI insights in one place</div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 3 -->
+                <div class="flow-step" onclick="alert('Step 3: See fund performance across different timeframes. Monthly, Quarterly, or Yearly returns. Interactive charts with insights.')">
+                    <div class="flow-number">3</div>
+                    <div class="flow-title">Performance Analytics</div>
+                    <div class="flow-description">Monthly / Quarterly / Yearly returns with dynamic charts</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Visualize performance, identify trends, spot opportunities</div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 4 -->
+                <div class="flow-step" onclick="alert('Step 4: Time Machine Feature! Simulate investment on any date. See how much your money would have grown. Plan better.')">
+                    <div class="flow-number">4</div>
+                    <div class="flow-title">What if Scenario</div>
+                    <div class="flow-description">Interactive investment simulator with date picker</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Explore historical returns and make informed decisions</div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 5 -->
+                <div class="flow-step ai-featured" onclick="alert('Step 5: MOD ALPHA - The Game Changer! Compare traditional SIP vs AI-optimized dates. See 15.7% extra earnings potential.')">
+                    <div class="flow-number">5</div>
+                    <div class="flow-title">MOD Alpha Analysis</div>
+                    <div class="flow-description">Compare traditional SIP vs. AI-optimized SIP</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">AI finds best investment dates. Boost returns by 15.7%+</div>
+                    <div class="ai-badge">🤖 AI Powered</div>
+                </div>
+
+                <div class="arrow">⬇️</div>
+
+                <!-- Step 6 -->
+                <div class="flow-step ai-featured" onclick="alert('Step 6: AI Insights & Chat! Get AI-generated recommendations with confidence scores. Chat with AI advisor. Ask questions. Get answers.')">
+                    <div class="flow-number">6</div>
+                    <div class="flow-title">AI Insights & Chat</div>
+                    <div class="flow-description">AI generated insights, key takeaways & AI Chat support</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem;">Conversational AI advisor. Personalized recommendations.</div>
+                    <div class="ai-badge">⚡ AI Driven</div>
+                </div>
+            </div>
+
+            <!-- CIRCULAR FLOW DIAGRAM -->
+            <div class="diagram-circular">
+                <div class="circle-container">
+                    <div class="center-circle">MOD<br>ALPHA</div>
+                    <div class="circle-step" style="top: 0; left: 50%; transform: translateX(-50%);" onclick="alert('Step 1: Home - Modern landing page')">
+                        <div class="circle-number">1</div>
+                        <div class="circle-title">Home</div>
+                    </div>
+                    <div class="circle-step" style="top: 15%; right: 10%;" onclick="alert('Step 2: Fund Selection')">
+                        <div class="circle-number">2</div>
+                        <div class="circle-title">Funds</div>
+                    </div>
+                    <div class="circle-step" style="top: 50%; right: -5%; transform: translateY(-50%);" onclick="alert('Step 3: Performance')">
+                        <div class="circle-number">3</div>
+                        <div class="circle-title">Analytics</div>
+                    </div>
+                    <div class="circle-step" style="bottom: 15%; right: 10%;" onclick="alert('Step 4: What if Invested')">
+                        <div class="circle-number">4</div>
+                        <div class="circle-title">Simulate</div>
+                    </div>
+                    <div class="circle-step ai-featured" style="bottom: 0; left: 50%; transform: translateX(-50%);" onclick="alert('Step 5: MOD Alpha - Compare SIP')">
+                        <div class="circle-number">5</div>
+                        <div class="circle-title">SIP AI</div>
+                    </div>
+                    <div class="circle-step ai-featured" style="bottom: 15%; left: 10%;" onclick="alert('Step 6: AI Insights & Chat')">
+                        <div class="circle-number">6</div>
+                        <div class="circle-title">AI Chat</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VERTICAL FLOW DIAGRAM -->
+            <div class="diagram-vertical">
+                <div class="vertical-step" onclick="alert('Step 1')">
+                    <div class="vertical-number">1</div>
+                    <div class="vertical-content">
+                        <h3>Home Page</h3>
+                        <p>Modern premium landing page. Learn about AI-powered investment intelligence.</p>
+                    </div>
+                </div>
+                <div class="vertical-divider"></div>
+
+                <div class="vertical-step" onclick="alert('Step 2')">
+                    <div class="vertical-number">2</div>
+                    <div class="vertical-content">
+                        <h3>Fund Selection & Overview</h3>
+                        <p>Searchable fund selector with key info and AI summary. Browse 8500+ funds.</p>
+                    </div>
+                </div>
+                <div class="vertical-divider"></div>
+
+                <div class="vertical-step" onclick="alert('Step 3')">
+                    <div class="vertical-number">3</div>
+                    <div class="vertical-content">
+                        <h3>Interactive Performance Analytics</h3>
+                        <p>Monthly/Quarterly/Yearly returns. Dynamic charts with insights and trends.</p>
+                    </div>
+                </div>
+                <div class="vertical-divider"></div>
+
+                <div class="vertical-step" onclick="alert('Step 4')">
+                    <div class="vertical-number">4</div>
+                    <div class="vertical-content">
+                        <h3>What if I Invested on This Date?</h3>
+                        <p>Time machine simulator. Pick any date and investment amount. See returns.</p>
+                    </div>
+                </div>
+                <div class="vertical-divider"></div>
+
+                <div class="vertical-step ai-featured" onclick="alert('Step 5')">
+                    <div class="vertical-number">5</div>
+                    <div class="vertical-content">
+                        <h3>🤖 MOD Alpha - Intelligent SIP Analysis</h3>
+                        <p>Compare traditional SIP vs AI-optimized dates. See 15.7% extra earnings potential.</p>
+                    </div>
+                </div>
+                <div class="vertical-divider"></div>
+
+                <div class="vertical-step ai-featured" onclick="alert('Step 6')">
+                    <div class="vertical-number">6</div>
+                    <div class="vertical-content">
+                        <h3>⚡ AI Insights & Chat Support</h3>
+                        <p>AI-generated insights with confidence scores. Chat with AI advisor for recommendations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABLE VIEW -->
+            <div class="diagram-table">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Step</th>
+                            <th>Page Name</th>
+                            <th>Description</th>
+                            <th>Key Features</th>
+                            <th>AI Driven?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 700; color: var(--primary);">1</td>
+                            <td class="step-name">Home Page</td>
+                            <td>AI Powered Investment Intelligence</td>
+                            <td>Modern landing page, clear value prop, hero section</td>
+                            <td>✨ Featured</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700; color: var(--primary);">2</td>
+                            <td class="step-name">Fund Selection</td>
+                            <td>Searchable fund selector with key info & AI summary</td>
+                            <td>Search 8500+ funds, AI summaries, key metrics</td>
+                            <td>✓ AI Summary</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700; color: var(--primary);">3</td>
+                            <td class="step-name">Performance Analytics</td>
+                            <td>Monthly/Quarterly/Yearly returns with dynamic charts</td>
+                            <td>Interactive charts, trend analysis, insights</td>
+                            <td>✓ Insights</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700; color: var(--primary);">4</td>
+                            <td class="step-name">Time Machine</td>
+                            <td>Interactive investment simulator with date picker</td>
+                            <td>Date selection, amount input, growth visualization</td>
+                            <td>✓ Simulator</td>
+                        </tr>
+                        <tr style="background: rgba(0, 212, 255, 0.1);">
+                            <td style="font-weight: 700; color: var(--primary);">5</td>
+                            <td class="step-name">🤖 MOD Alpha</td>
+                            <td>Compare traditional SIP vs. AI-optimized SIP</td>
+                            <td>AI date suggestions, comparison charts, earnings calc</td>
+                            <td style="color: var(--primary); font-weight: 700;">🤖 CORE AI</td>
+                        </tr>
+                        <tr style="background: rgba(0, 212, 255, 0.1);">
+                            <td style="font-weight: 700; color: var(--primary);">6</td>
+                            <td class="step-name">⚡ AI Insights & Chat</td>
+                            <td>AI generated insights, key takeaways & AI Chat support</td>
+                            <td>Insight cards, confidence scores, AI chatbot, recommendations</td>
+                            <td style="color: var(--primary); font-weight: 700;">⚡ AI CHAT</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- GRID VIEW -->
+            <div class="diagram-grid">
+                <div class="grid-card">
+                    <div class="grid-header">
+                        <div class="grid-number">1</div>
+                        <span style="font-size: 1.5rem;">🏠</span>
+                    </div>
+                    <div class="grid-title">Home Page</div>
+                    <div class="grid-description">Modern premium landing page with clear value proposition and AI-powered investment intelligence messaging.</div>
+                </div>
+
+                <div class="grid-card">
+                    <div class="grid-header">
+                        <div class="grid-number">2</div>
+                        <span style="font-size: 1.5rem;">🔍</span>
+                    </div>
+                    <div class="grid-title">Fund Selection & Overview</div>
+                    <div class="grid-description">Searchable fund selector with key info and AI summary. Browse from 8500+ mutual funds and ETFs.</div>
+                </div>
+
+                <div class="grid-card">
+                    <div class="grid-header">
+                        <div class="grid-number">3</div>
+                        <span style="font-size: 1.5rem;">📈</span>
+                    </div>
+                    <div class="grid-title">Interactive Performance</div>
+                    <div class="grid-description">Monthly/Quarterly/Yearly returns with dynamic charts. View trends, patterns, and performance insights.</div>
+                </div>
+
+                <div class="grid-card">
+                    <div class="grid-header">
+                        <div class="grid-number">4</div>
+                        <span style="font-size: 1.5rem;">⏰</span>
+                    </div>
+                    <div class="grid-title">What if Invested?</div>
+                    <div class="grid-description">Time machine simulator. Pick any date and amount. See how your investment would have grown.</div>
+                </div>
+
+                <div class="grid-card ai-featured">
+                    <div class="grid-header">
+                        <div class="grid-number">5</div>
+                        <span style="font-size: 1.5rem;">🤖</span>
+                    </div>
+                    <div class="grid-title">MOD Alpha Analysis</div>
+                    <div class="grid-description">Compare traditional SIP vs AI-optimized dates. See 15.7% extra earnings potential through smart timing.</div>
+                    <div class="ai-badge">🤖 AI Core</div>
+                </div>
+
+                <div class="grid-card ai-featured">
+                    <div class="grid-header">
+                        <div class="grid-number">6</div>
+                        <span style="font-size: 1.5rem;">⚡</span>
+                    </div>
+                    <div class="grid-title">AI Insights & Chat</div>
+                    <div class="grid-description">AI-generated insights with confidence scores. Chat with AI advisor for personalized recommendations and guidance.</div>
+                    <div class="ai-badge">⚡ AI Chat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGEND -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box normal"></div>
+                <div class="legend-text">Standard Features</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box ai"></div>
+                <div class="legend-text">🤖 AI-Powered Feature</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchDiagram(type) {
+            // Hide all diagrams
+            document.querySelectorAll('.diagram-linear, .diagram-circular, .diagram-vertical, .diagram-table, .diagram-grid').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected diagram
+            if (type === 'linear') {
+                document.querySelector('.diagram-linear').classList.add('active');
+            } else if (type === 'circular') {
+                document.querySelector('.diagram-circular').classList.add('active');
+            } else if (type === 'vertical') {
+                document.querySelector('.diagram-vertical').classList.add('active');
+            } else if (type === 'table') {
+                document.querySelector('.diagram-table').classList.add('active');
+            } else if (type === 'grid') {
+                document.querySelector('.diagram-grid').classList.add('active');
+            }
+
+            // Update button styles
+            document.querySelectorAll('.btn-diagram').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

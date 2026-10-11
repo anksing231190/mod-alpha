@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Alpha — Performance Analytics</title>
+<link rel="stylesheet" href="shared-styles.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('modAlphaTheme') || 'dark');</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .fund-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .fund-header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .fund-header .tags { display: flex; gap: 0.4rem; }
+
+    .section-tabs { margin-bottom: 1.5rem; }
+
+    .fund-selector-inline {
+        display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem;
+        background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+        padding: 0.8rem 1.1rem;
+    }
+    .fund-selector-inline select {
+        flex: 1; background: transparent; border: none; color: var(--text);
+        font-size: 0.9rem; outline: none; cursor: pointer;
+    }
+
+    .top-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .top-metric { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
+    .top-metric .tm-val { font-size: 1.5rem; font-weight: 700; }
+    .top-metric .tm-lbl { font-size: 0.75rem; color: var(--text-faint); margin-top: 0.3rem; }
+
+    .chart-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 1rem; }
+    .chart-title-sm { font-size: 1.05rem; font-weight: 700; }
+
+    .chart-insights-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.5rem; }
+    .insight-stat { background: var(--bg-alt); border-left: 3px solid var(--blue); border-radius: 6px; padding: 0.8rem 1rem; }
+    .insight-stat .is-lbl { font-size: 0.7rem; color: var(--text-faint); text-transform: uppercase; margin-bottom: 0.3rem; }
+    .insight-stat .is-val { font-size: 1.1rem; font-weight: 700; }
+
+    @media (max-width: 900px) {
+        .top-metrics { grid-template-columns: repeat(2, 1fr); }
+        .chart-insights-row { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="page">
+    <div class="eyebrow">📈 Performance Analytics</div>
+
+    <div class="fund-selector-inline">
+        <span style="color:var(--text-faint);">📊 Viewing fund:</span>
+        <select id="fundSwitcher" onchange="switchFund(this.value)">
+            <option value="quant">Quant Small Cap Fund - Direct Growth</option>
+            <option value="nifty">Nifty 50 Index Fund - Direct Growth</option>
+            <option value="midcap">Axis Midcap 150 Fund - Direct Growth</option>
+            <option value="hybrid">ICICI Prudential Hybrid Equity Fund</option>
+        </select>
+        <a href="page-2-fund-selection.html" style="font-size:0.8rem; color: var(--blue-light);">Change fund →</a>
+    </div>
+
+    <div class="fund-header">
+        <div>
+            <h1 id="fundTitle">Quant Small Cap Fund - Direct Growth</h1>
+            <div class="tags">
+                <span class="pill pill-blue">Equity</span>
+                <span class="pill pill-purple">Small Cap</span>
+            </div>
+        </div>
+        <button class="btn btn-ghost">+ Add to Watchlist</button>
+    </div>
+
+    <div class="tabs section-tabs">
+        <button class="tab active">Overview</button>
+        <button class="tab">Performance</button>
+        <button class="tab">Risk</button>
+        <button class="tab">Portfolio</button>
+        <button class="tab">AI Insights</button>
+    </div>
+
+    <div class="top-metrics" id="topMetrics"></div>
+
+    <div class="card chart-box" style="padding: 1.8rem;">
+        <div class="chart-header-row">
+            <div class="chart-title-sm" id="chartPeriodTitle">Monthly Returns (%)</div>
+            <div class="tabs">
+                <button class="tab active" onclick="switchPeriod('monthly', this)">Monthly</button>
+                <button class="tab" onclick="switchPeriod('quarterly', this)">Quarterly</button>
+                <button class="tab" onclick="switchPeriod('yearly', this)">Yearly</button>
+            </div>
+        </div>
+        <div class="chart-canvas-wrap">
+            <canvas id="perfChart"></canvas>
+        </div>
+
+        <div class="chart-insights-row">
+            <div class="insight-stat"><div class="is-lbl">Best Period</div><div class="is-val" style="color:var(--green);" id="bestPeriod">+8.4%</div></div>
+            <div class="insight-stat"><div class="is-lbl">Worst Period</div><div class="is-val" style="color:var(--red);" id="worstPeriod">-3.1%</div></div>
+            <div class="insight-stat"><div class="is-lbl">Average Return</div><div class="is-val" id="avgPeriod">+2.9%</div></div>
+            <div class="insight-stat"><div class="is-lbl">Positive Months</div><div class="is-val" id="winRate">8 / 12</div></div>
+        </div>
+    </div>
+
+    <div style="height: 1.5rem;"></div>
+
+    <section class="ai-insight-box">
+        <div class="ai-icon"><svg class="ai-spark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
+        <div>
+            <div class="ai-label">AI Insight</div>
+            <p id="aiInsightText">The fund has shown strong positive momentum with 8 of last 12 months delivering positive returns. Recent performance is 12% above its category average.</p>
+        </div>
+    </section>
+</div>
+
+<script src="shared-widgets.js"></script>
+<script>
+const FUND_DATA = {
+    quant: {
+        name: 'Quant Small Cap Fund - Direct Growth', tags: ['Equity','Small Cap'],
+        cagr5y: 32.4, cagr3y: 24.1, ret1y: 18.6, nav: 87432,
+        monthly: [3.2,-1.1,5.1,4.2,-0.8,2.9,4.5,-2.1,4.2,3.5,4.8,3.2],
+        quarterly: [9.8, 7.5, 11.2, 8.9, 10.1, 6.8, 12.4, 9.2],
+        yearly: [18.9, 24.1, 32.4],
+        insight: "The fund has shown strong positive momentum with 8 of last 12 months delivering positive returns. Recent performance is 12% above its category average."
+    },
+    nifty: {
+        name: 'Nifty 50 Index Fund - Direct Growth', tags: ['Equity','Index'],
+        cagr5y: 18.5, cagr3y: 15.2, ret1y: 18.5, nav: 24560,
+        monthly: [1.2,1.8,0.8,2.1,-0.5,1.9,-0.2,1.5,1.3,2.3,1.1,2.8],
+        quarterly: [3.2,2.8,5.1,4.2,3.8,2.9,4.5,3.1],
+        yearly: [12.3,15.2,18.5],
+        insight: "Nifty 50 shows consistent low-volatility growth. 9 of last 12 months were positive, with Q3 historically the strongest quarter."
+    },
+    midcap: {
+        name: 'Axis Midcap 150 Fund - Direct Growth', tags: ['Equity','Mid Cap'],
+        cagr5y: 22.3, cagr3y: 18.7, ret1y: 22.3, nav: 31240,
+        monthly: [1.5,2.1,-1.2,2.8,2.2,-0.5,2.1,1.8,2.9,-1.6,3.2,1.9],
+        quarterly: [4.1,3.9,6.2,5.1,4.5,3.2,5.8,4.2],
+        yearly: [15.8,18.7,22.3],
+        insight: "Midcap 150 delivered its strongest gains in Q3 across most years. Higher volatility than large-cap peers but with proportionally higher returns."
+    },
+    hybrid: {
+        name: 'ICICI Prudential Hybrid Equity Fund', tags: ['Hybrid'],
+        cagr5y: 15.2, cagr3y: 12.8, ret1y: 12.1, nav: 15680,
+        monthly: [0.8,1.1,0.5,1.4,1.2,0.1,0.9,0.8,1.6,0.7,1.9,0.9],
+        quarterly: [2.1,1.9,3.2,2.8,2.3,1.8,2.9,2.1],
+        yearly: [8.5,10.2,12.1],
+        insight: "This hybrid fund shows the lowest volatility in its category, making it suitable for conservative SIP investors seeking stable, steady growth."
+    }
+};
+
+let currentFundKey = 'quant';
+let currentPeriod = 'monthly';
+let chartInstance;
+
+function renderTopMetrics(f) {
+    document.getElementById('topMetrics').innerHTML = `
+        <div class="top-metric"><div class="tm-val" style="color:var(--green);">${f.cagr5y}%</div><div class="tm-lbl">5Y CAGR</div></div>
+        <div class="top-metric"><div class="tm-val" style="color:var(--green);">${f.cagr3y}%</div><div class="tm-lbl">3Y CAGR</div></div>
+        <div class="top-metric"><div class="tm-val" style="color:var(--green);">${f.ret1y}%</div><div class="tm-lbl">1Y Return</div></div>
+        <div class="top-metric"><div class="tm-val">₹${f.nav.toLocaleString('en-IN')}</div><div class="tm-lbl">NAV (Latest)</div></div>
+    `;
+}
+
+function periodData(f, period) {
+    if (period === 'monthly') return { data: f.monthly, labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], title: 'Monthly Returns (%)' };
+    if (period === 'quarterly') return { data: f.quarterly, labels: ['Q1 \'23','Q2 \'23','Q3 \'23','Q4 \'23','Q1 \'24','Q2 \'24','Q3 \'24','Q4 \'24'], title: 'Quarterly Returns (%)' };
+    return { data: f.yearly, labels: ['2024','2025','2026'], title: 'Yearly Returns (%)' };
+}
+
+function renderChart() {
+    const f = FUND_DATA[currentFundKey];
+    const { data, labels, title } = periodData(f, currentPeriod);
+    document.getElementById('chartPeriodTitle').textContent = title;
+
+    const best = Math.max(...data);
+    const worst = Math.min(...data);
+    const avg = (data.reduce((a,b)=>a+b,0)/data.length).toFixed(1);
+    const positives = data.filter(v => v > 0).length;
+
+    document.getElementById('bestPeriod').textContent = '+' + best.toFixed(1) + '%';
+    document.getElementById('worstPeriod').textContent = worst.toFixed(1) + '%';
+    document.getElementById('avgPeriod').textContent = (avg >= 0 ? '+' : '') + avg + '%';
+    document.getElementById('winRate').textContent = positives + ' / ' + data.length;
+    document.getElementById('aiInsightText').textContent = f.insight;
+
+    const ctx = document.getElementById('perfChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+
+    chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data,
+                backgroundColor: data.map(v => v >= 0 ? 'rgba(34,197,94,0.7)' : 'rgba(239,68,68,0.7)'),
+                borderRadius: 6,
+                maxBarThickness: 40
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(18,25,52,0.95)',
+                    borderColor: '#8b5cf6',
+                    borderWidth: 1,
+                    padding: 12,
+                    titleColor: '#f1f5f9',
+                    bodyColor: '#94a3b8',
+                    callbacks: { label: (c) => 'Return: ' + (c.parsed.y >= 0 ? '+' : '') + c.parsed.y.toFixed(1) + '%' }
+                }
+            },
+            scales: {
+                y: { ticks: { color: '#64748b', callback: v => v + '%' }, grid: { color: 'rgba(35,43,77,0.5)' } },
+                x: { ticks: { color: '#64748b' }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+function switchFund(key) {
+    currentFundKey = key;
+    const f = FUND_DATA[key];
+    document.getElementById('fundTitle').textContent = f.name;
+    renderTopMetrics(f);
+    renderChart();
+}
+
+function switchPeriod(period, el) {
+    currentPeriod = period;
+    document.querySelectorAll('#chartPeriodTitle').forEach(()=>{});
+    el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderChart();
+}
+
+window.addEventListener('load', () => {
+    renderTopMetrics(FUND_DATA[currentFundKey]);
+    renderChart();
+});
+</script>
+</body>
+</html>

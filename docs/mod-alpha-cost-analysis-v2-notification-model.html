@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mod Alpha — What It Costs To Run</title>
+  <style>
+    :root {
+      --bg: #fafafa; --paper: #ffffff; --text: #1a1a2e; --muted: #5c5c7a;
+      --border: #e2e2ef; --accent: #2563eb; --accent-soft: #eff6ff;
+      --green: #059669; --green-soft: #ecfdf5; --amber: #d97706; --amber-soft: #fffbeb;
+      --red: #dc2626; --red-soft: #fef2f2; --code-bg: #f4f4f8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 15px; }
+    .doc { max-width: 980px; margin: 0 auto; background: var(--paper); box-shadow: 0 1px 24px rgba(0,0,0,.06); }
+    .cover { padding: 64px 56px 48px; border-bottom: 4px solid var(--accent); }
+    .cover .badge { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 6px 12px; border-radius: 4px; margin-bottom: 20px; }
+    .cover h1 { font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+    .cover .subtitle { font-size: 17px; color: var(--muted); margin-bottom: 20px; }
+    section { padding: 36px 56px; border-bottom: 1px solid var(--border); }
+    section:last-child { border-bottom: none; }
+    h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    h3 { font-size: 16px; font-weight: 600; margin: 24px 0 10px; }
+    h4 { font-size: 13px; font-weight: 600; margin: 16px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    p { margin-bottom: 12px; }
+    .lead { font-size: 15.5px; color: var(--muted); margin-bottom: 18px; }
+    ul, ol { margin: 0 0 16px 24px; }
+    li { margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 14px 0 22px; }
+    th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+    th { background: #f8f8fc; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+    tr:nth-child(even) td { background: #fcfcfe; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .callout { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 14px 18px; margin: 18px 0; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+    .callout.warn { border-color: var(--amber); background: var(--amber-soft); }
+    .callout.ok { border-color: var(--green); background: var(--green-soft); }
+    .callout.danger { border-color: var(--red); background: var(--red-soft); }
+    .callout > strong:first-child { display: block; margin-bottom: 4px; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+    .compare-card { border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .compare-card h3 { margin-top: 0; font-size: 15px; }
+    .compare-card.removed { background: var(--red-soft); border-color: #f3b4b4; }
+    .compare-card.kept { background: var(--green-soft); border-color: #a7e3cb; }
+    .scale-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0; }
+    .scale-box { border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .scale-box .scale-n { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .scale-box .scale-lbl { font-size: 11.5px; color: var(--muted); margin-top: 4px; text-transform: uppercase; }
+    .scale-box .scale-sub { font-size: 12.5px; color: var(--muted); margin-top: 8px; }
+    .scale-box .scale-margin { font-weight: 700; color: var(--green); font-size: 16px; margin-top: 4px; }
+    .footer { padding: 22px 56px 36px; font-size: 12px; color: var(--muted); background: #f8f8fc; }
+    @media (max-width: 720px) {
+      .cover, section, .footer { padding-left: 20px; padding-right: 20px; }
+      .compare-grid, .scale-grid { grid-template-columns: 1fr; }
+    }
+
+    .print-hint {
+      background: #1e293b; color: #e2e8f0; padding: 12px 20px; text-align: center; font-size: 13px;
+    }
+    .print-hint kbd { background: #334155; padding: 2px 8px; border-radius: 4px; font-family: inherit; }
+
+    @page { size: A4; margin: 14mm 12mm; }
+
+    @media print {
+      body { background: #fff; font-size: 10.5pt; }
+      .doc { box-shadow: none; max-width: 100%; }
+      .no-print { display: none; }
+      a { color: inherit; text-decoration: none; }
+
+      .cover { padding: 28px 32px 22px; }
+      section { padding: 20px 32px; }
+      .footer { padding: 16px 32px 24px; }
+
+      h2 { font-size: 17px; page-break-after: avoid; break-after: avoid; }
+      h3 { font-size: 13px; page-break-after: avoid; break-after: avoid; }
+      h2, h3, .lead { page-break-after: avoid; break-after: avoid; }
+
+      /* The core requirement: no table (or its rows) may be split across a page boundary */
+      table, tr, thead, tbody {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      table { font-size: 9.5pt; margin: 10px 0 16px; }
+      th, td { padding: 6px 9px; }
+
+      .callout, .compare-card, .scale-box, .scale-grid, .compare-grid, .keep-together {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      /* Sections themselves are allowed to span a page break (they're long) —
+         only the tables/callouts/cards inside them are protected above */
+      section { page-break-inside: auto; }
+
+      p, li { orphans: 3; widows: 3; }
+    }
+  </style>
+</head>
+<body>
+  <p class="print-hint no-print">
+    To save as PDF: open this file in Chrome or Edge → <kbd>Ctrl+P</kbd> → Destination: <strong>Save as PDF</strong> → Enable <strong>Background graphics</strong>
+  </p>
+
+  <article class="doc">
+    <header class="cover">
+      <h1>Mod Alpha — What It Costs To Run</h1>
+      <p class="subtitle">A simple breakdown of monthly costs at 10,000 / 50,000 / 100,000 and 1 million paying customers</p>
+      <p>This covers a simpler version of Mod Alpha: we tell people the best day each month to invest in a mutual fund — we don't place trades for them, and we don't read their bank or investment account data. Customers pick the funds they're interested in themselves, verify their identity (ID check) to subscribe, and we send them a notification when it's a good day to invest.</p>
+    </header>
+
+    <section id="scope-change">
+      <h2>1. What Changed, And Why It's Cheaper Now</h2>
+      <p class="lead">We simplified the product in two ways, and that made it much cheaper and much simpler to run.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card removed">
+          <h3>❌ What we removed</h3>
+          <ul>
+            <li>Automatically reading a customer's bank/investment account data</li>
+            <li>Connecting to stockbrokers to place trades (Zerodha, Groww, Upstox, Angel One)</li>
+            <li>The system that would place and track trades on someone's behalf</li>
+            <li>Special network setup that's only needed for placing trades</li>
+            <li>A complex trade-logging system (replaced with a simpler one)</li>
+            <li>Checking for accidental double-investments (not needed — we never see their trades)</li>
+            <li>ID verification for people who are just browsing, not paying</li>
+          </ul>
+        </div>
+        <div class="compare-card kept">
+          <h3>✅ What we still need</h3>
+          <ul>
+            <li>ID verification (KYC) for anyone who pays to subscribe</li>
+            <li>The AI that picks the best investment date — now worked out <strong>once per fund</strong>, not separately for every customer</li>
+            <li>Sending notifications by app alert, text message, and email</li>
+            <li>Collecting subscription payments</li>
+            <li>The mobile app and the website</li>
+            <li>Security testing, keeping records of what we told customers, and following India's data privacy law</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Why this matters</strong>
+        The two things we removed — reading people's investment accounts automatically, and connecting to brokers to place trades — were the most expensive parts of the original plan (up to ₹95,000 a month just for account-reading fees, at 50,000 customers). Without them, Mod Alpha looks much more like a simple subscription app than a trading platform — and it's cheaper, simpler, and lower-risk to run.
+      </div>
+
+      <div class="callout warn">
+        <strong>What's not included here</strong>
+        Getting registered as a licensed financial advisor with SEBI (India's market regulator) is being handled as a separate piece of work, so that cost is <strong>not included</strong> in the numbers below. This document only covers what it costs to run the servers, verify IDs, and send notifications.
+      </div>
+    </section>
+
+    <section id="assumptions">
+      <h2>2. Our Starting Assumptions</h2>
+      <p class="lead">Before the numbers, here's exactly what we assumed. These are our best estimates today, not confirmed prices.</p>
+      <table>
+        <thead><tr><th>What we assumed</th><th>Our estimate</th><th>Explanation</th></tr></thead>
+        <tbody>
+          <tr><td>Who counts as a "customer" below</td><td>Only paying, ID-verified subscribers</td><td>10k / 50k / 100k / 1M means paying customers — not free app downloads or casual browsers</td></tr>
+          <tr><td>Average amount each customer pays us per month</td><td>₹180/month</td><td>A blended average across our Monthly plan (₹199), Quarterly plan (₹499, ≈ ₹166/month), and Half-yearly plan (₹899, ≈ ₹150/month)</td></tr>
+          <tr><td>ID verification (KYC) steps</td><td>PAN card check + government ID database + digital signature</td><td>Done through a third-party ID-verification company (e.g. Digio, Signzy, IDfy, Karza)</td></tr>
+          <tr><td>Cost to verify one person's ID</td><td>₹50–₹65, paid once per person</td><td>Gets a little cheaper per person as we verify more people in bulk</td></tr>
+          <tr><td>How we notify customers</td><td>App alert first, text message as backup, email summary</td><td>App alerts are free to send; text messages cost money, so we use them only for important alerts</td></tr>
+          <tr><td>How the AI picks investment dates</td><td>Worked out once per mutual fund (~8,500 funds), not per customer</td><td>Cost barely changes even with many more customers, since the <strong>number of funds</strong> stays roughly the same</td></tr>
+          <tr><td>How fast new paying customers join each month</td><td>Starts fast, slows down as we grow</td><td>Used only to estimate the monthly ID-verification bill for new signups</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="infra-tiers">
+      <h2>3. Monthly Server &amp; Tech Costs</h2>
+      <p class="lead">A simple setup: basic cloud servers, a database, a notification system, and a website — nothing elaborate until we reach 1 million customers.</p>
+
+      <table>
+        <thead>
+          <tr><th>What it's for</th><th class="num">10k Customers</th><th class="num">50k Customers</th><th class="num">100k Customers</th><th class="num">1M Customers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Servers (the computers running the app)</td><td class="num">₹18,000</td><td class="num">₹32,000</td><td class="num">₹55,000</td><td class="num">₹2,80,000</td></tr>
+          <tr><td>Database (stores customer accounts and fund data)</td><td class="num">₹10,000</td><td class="num">₹25,000</td><td class="num">₹42,000</td><td class="num">₹2,10,000</td></tr>
+          <tr><td>Cache (makes the app feel faster)</td><td class="num">₹4,000</td><td class="num">₹7,000</td><td class="num">₹14,000</td><td class="num">₹55,000</td></tr>
+          <tr><td>AI engine (works out best investment dates, per fund)</td><td class="num">₹8,000</td><td class="num">₹10,000</td><td class="num">₹12,000</td><td class="num">₹25,000</td></tr>
+          <tr><td>Notification system (sends app alerts, texts, emails)</td><td class="num">₹3,000</td><td class="num">₹6,000</td><td class="num">₹10,000</td><td class="num">₹55,000</td></tr>
+          <tr><td>Website hosting</td><td class="num">₹3,000</td><td class="num">₹4,000</td><td class="num">₹6,000</td><td class="num">₹18,000</td></tr>
+          <tr><td>Monitoring tools (alert us if something breaks)</td><td class="num">₹2,000</td><td class="num">₹4,000</td><td class="num">₹8,000</td><td class="num">₹38,000</td></tr>
+          <tr><td>Security tools (protect against attacks)</td><td class="num">₹3,000</td><td class="num">₹5,000</td><td class="num">₹10,000</td><td class="num">₹45,000</td></tr>
+          <tr><td>Other engineering tools</td><td class="num">₹4,000</td><td class="num">₹6,000</td><td class="num">₹8,000</td><td class="num">₹30,000</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Total servers &amp; tools, per month</strong></td><td class="num"><strong>₹55,000</strong></td><td class="num"><strong>₹99,000</strong></td><td class="num"><strong>₹1,65,000</strong></td><td class="num"><strong>₹7,56,000</strong></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout ok">
+        <strong>Why the AI engine line barely grows</strong>
+        It only triples (₹8,000 → ₹25,000) going from 10,000 customers all the way to 1 million, because it works out one result per <em>mutual fund</em> (about 8,500 of them) — not one result per customer. So whether we have 10,000 customers or 1 million, the AI does roughly the same amount of work. This is the single biggest reason the whole cost model stays cheap as we grow.
+      </div>
+    </section>
+
+    <section id="variable-costs">
+      <h2>4. Cost Per Customer</h2>
+
+      <h3>What each paying customer costs us every month</h3>
+      <table>
+        <thead><tr><th>Cost item</th><th class="num">10k</th><th class="num">50k</th><th class="num">100k</th><th class="num">1M</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Notifications (app alerts + some texts + emails)</td><td class="num">₹6.0</td><td class="num">₹5.5</td><td class="num">₹5.0</td><td class="num">₹4.0</td><td>Text messages get cheaper in bulk</td></tr>
+          <tr><td>Payment processing fee (~2% of what they pay us)</td><td class="num">₹3.6</td><td class="num">₹3.6</td><td class="num">₹3.6</td><td class="num">₹3.6</td><td>A fixed % of revenue, charged by the payment provider (e.g. Razorpay)</td></tr>
+          <tr><td>Customer support (a small slice of our support team's time)</td><td class="num">₹2.5</td><td class="num">₹2.0</td><td class="num">₹1.5</td><td class="num">₹1.0</td><td>Gets cheaper per person as support gets more automated</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Total recurring cost per customer, per month</strong></td><td class="num"><strong>₹12.1</strong></td><td class="num"><strong>₹11.1</strong></td><td class="num"><strong>₹10.1</strong></td><td class="num"><strong>₹8.6</strong></td><td></td></tr>
+        </tbody>
+      </table>
+
+      <h3>What it costs to verify each new customer's ID (one-time)</h3>
+      <table>
+        <thead><tr><th>ID verification (KYC)</th><th class="num">10k</th><th class="num">50k</th><th class="num">100k</th><th class="num">1M</th></tr></thead>
+        <tbody>
+          <tr><td>Cost per person, paid once (cheaper in bulk)</td><td class="num">₹65</td><td class="num">₹62</td><td class="num">₹58</td><td class="num">₹50</td></tr>
+          <tr><td>New paying customers expected per month</td><td class="num">800</td><td class="num">2,000</td><td class="num">3,000</td><td class="num">15,000</td></tr>
+          <tr style="background:#fffbeb"><td><strong>Monthly ID-verification bill</strong></td><td class="num"><strong>₹52,000</strong></td><td class="num"><strong>₹1,24,000</strong></td><td class="num"><strong>₹1,74,000</strong></td><td class="num"><strong>₹7,50,000</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="total-summary">
+      <h2>5. Total Monthly Cost</h2>
+      <p class="lead">Adding everything up: servers &amp; tools, the recurring per-customer costs, and the monthly ID-verification bill.</p>
+      <table>
+        <thead>
+          <tr><th>Line item</th><th class="num">10k Customers</th><th class="num">50k Customers</th><th class="num">100k Customers</th><th class="num">1M Customers</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Servers &amp; tools</td><td class="num">₹55,000</td><td class="num">₹99,000</td><td class="num">₹1,65,000</td><td class="num">₹7,56,000</td></tr>
+          <tr><td>Recurring per-customer costs, added up (notifications + payments + support)</td><td class="num">₹1,21,000</td><td class="num">₹5,55,000</td><td class="num">₹10,10,000</td><td class="num">₹86,00,000</td></tr>
+          <tr><td>ID verification for new signups this month</td><td class="num">₹52,000</td><td class="num">₹1,24,000</td><td class="num">₹1,74,000</td><td class="num">₹7,50,000</td></tr>
+          <tr style="background:#eff6ff"><td><strong>TOTAL cost per month</strong></td><td class="num"><strong>₹2,28,000</strong></td><td class="num"><strong>₹7,78,000</strong></td><td class="num"><strong>₹13,49,000</strong></td><td class="num"><strong>₹1,01,06,000</strong></td></tr>
+          <tr><td><strong>Cost per customer, per month</strong></td><td class="num"><strong>₹22.8</strong></td><td class="num"><strong>₹15.6</strong></td><td class="num"><strong>₹13.5</strong></td><td class="num"><strong>₹10.1</strong></td></tr>
+          <tr><td>Money coming in (₹180/month × number of customers)</td><td class="num">₹18,00,000</td><td class="num">₹90,00,000</td><td class="num">₹1,80,00,000</td><td class="num">₹18,00,00,000</td></tr>
+          <tr style="background:#ecfdf5"><td><strong>What's left over as profit</strong></td><td class="num"><strong>₹15,72,000 (87%)</strong></td><td class="num"><strong>₹82,22,000 (91%)</strong></td><td class="num"><strong>₹1,66,51,000 (93%)</strong></td><td class="num"><strong>₹16,98,94,000 (94%)</strong></td></tr>
+        </tbody>
+      </table>
+
+      <div class="scale-grid">
+        <div class="scale-box">
+          <div class="scale-n">₹22.8</div>
+          <div class="scale-lbl">Cost per customer, per month</div>
+          <div class="scale-sub">10,000 customers</div>
+          <div class="scale-margin">87% left as profit</div>
+        </div>
+        <div class="scale-box">
+          <div class="scale-n">₹15.6</div>
+          <div class="scale-lbl">Cost per customer, per month</div>
+          <div class="scale-sub">50,000 customers</div>
+          <div class="scale-margin">91% left as profit</div>
+        </div>
+        <div class="scale-box">
+          <div class="scale-n">₹13.5</div>
+          <div class="scale-lbl">Cost per customer, per month</div>
+          <div class="scale-sub">100,000 customers</div>
+          <div class="scale-margin">93% left as profit</div>
+        </div>
+        <div class="scale-box">
+          <div class="scale-n">₹10.1</div>
+          <div class="scale-lbl">Cost per customer, per month</div>
+          <div class="scale-sub">1,000,000 customers</div>
+          <div class="scale-margin">94% left as profit</div>
+        </div>
+      </div>
+
+      <div class="callout ok">
+        <strong>The headline result</strong>
+        Running Mod Alpha now looks like running a simple subscription app, not an expensive trading platform. It costs about ₹23 to serve one paying customer for a month when we have 10,000 customers — and that drops to about ₹10 once we reach 1 million, because the big shared costs (servers, AI engine) get spread across more people, and bulk pricing on ID-checks and notifications kicks in. The share of revenue left over as profit improves from 87% to 94% over that same growth.
+      </div>
+    </section>
+
+    <section id="one-time-costs">
+      <h2>6. One-Time Costs To Launch</h2>
+      <p class="lead">Costs paid once to get up and running, separate from the monthly running costs above.</p>
+      <table>
+        <thead><tr><th>What it's for</th><th class="num">Estimated cost</th></tr></thead>
+        <tbody>
+          <tr><td>Building the app, website, and AI engine, plus design work</td><td class="num">To be decided</td></tr>
+          <tr><td>Getting registered as a licensed financial advisor with SEBI</td><td class="num">Being handled separately</td></tr>
+          <tr><td>Legal paperwork and security testing</td><td class="num">₹17 – 25 lakh</td></tr>
+          <tr style="background:#ecfdf5"><td><strong>Total one-time cost (not counting SEBI registration)</strong></td><td class="num"><strong>To be decided + ₹17 – 25 lakh</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="cost-levers">
+      <h2>7. What Could Change These Numbers</h2>
+      <div class="keep-together">
+      <table>
+        <thead><tr><th>What we could change</th><th>What it does to cost</th></tr></thead>
+        <tbody>
+          <tr><td>How much we rely on text messages vs just app alerts</td><td>This is the single biggest cost we actually control. Relying mostly on app alerts instead of text messages could cut notification costs by roughly 60%</td></tr>
+          <tr><td>Negotiating cheaper ID-verification pricing as we grow</td><td>Going from ₹65 to ₹50 per person once we're verifying a million people saves about ₹15 per person</td></tr>
+          <tr><td>How often the AI recalculates the best investment dates</td><td>Barely matters — running it daily instead of weekly costs almost nothing extra, since it's worked out per fund, not per customer</td></tr>
+          <tr><td>What share of app users actually pay to subscribe</td><td>Doesn't change our server costs directly, since ID-checks and notifications only apply to paying customers — but it does matter for how many "free" users we're supporting without any revenue from them</td></tr>
+          <tr><td>Negotiating a lower payment processing fee</td><td>Worth doing once we're large: even a quarter-percent reduction saves a meaningful amount of money at 1 million customers</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <strong>What's not included in this model</strong>
+        Getting licensed as a financial advisor with SEBI, legal reviews specific to giving investment advice, money spent on marketing to get new customers, and salaries — none of that is included here. This covers only <strong>servers, ID verification, and sending notifications</strong>.
+      </div>
+      </div>
+    </section>
+
+    <section id="sensitivity">
+      <h2>8. What If Our Guesses Are Wrong?</h2>
+      <p class="lead">Two of the numbers used above are our best guesses, not confirmed facts: how much we end up relying on text messages, and how much each customer actually pays us. This section shows what happens to our profit if those guesses turn out wrong — tested at 100,000 and 1 million customers, since those are the sizes that matter most for planning.</p>
+
+      <h3>The three notification approaches we tested</h3>
+      <table>
+        <thead><tr><th>Approach</th><th>What it means</th><th class="num">Cost/customer/mo @ 100k</th><th class="num">Cost/customer/mo @ 1M</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mostly app alerts</strong></td><td>We rely almost entirely on free app notifications, and rarely send text messages</td><td class="num">₹1.5</td><td class="num">₹1.0</td></tr>
+          <tr><td><strong>Mixed</strong> <em>(our main assumption)</em></td><td>App alerts first, with a text message backup for important dates, plus an email summary</td><td class="num">₹5.0</td><td class="num">₹4.0</td></tr>
+          <tr><td><strong>Mostly text messages</strong></td><td>We rely heavily on texts, because app alerts aren't getting through reliably (a real risk — see the note below)</td><td class="num">₹18.0</td><td class="num">₹15.0</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.1 Profit margin at 100,000 customers</h3>
+      <table>
+        <thead><tr><th>Notification approach</th><th class="num">Paying ₹99/month</th><th class="num">Paying ₹180/month (our guess)</th><th class="num">Paying ₹250/month</th></tr></thead>
+        <tbody>
+          <tr><td>Mostly app alerts</td><td class="num">91.5%</td><td class="num">94.4%</td><td class="num">95.4%</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Mixed (our main assumption)</strong></td><td class="num">88.0%</td><td class="num"><strong>92.5%</strong></td><td class="num">94.0%</td></tr>
+          <tr><td>Mostly text messages</td><td class="num">74.9%</td><td class="num">85.3%</td><td class="num">88.8%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.2 Profit margin at 1,000,000 customers</h3>
+      <table>
+        <thead><tr><th>Notification approach</th><th class="num">Paying ₹99/month</th><th class="num">Paying ₹180/month (our guess)</th><th class="num">Paying ₹250/month</th></tr></thead>
+        <tbody>
+          <tr><td>Mostly app alerts</td><td class="num">94.4%</td><td class="num">96.1%</td><td class="num">96.6%</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Mixed (our main assumption)</strong></td><td class="num">91.4%</td><td class="num"><strong>94.4%</strong></td><td class="num">95.4%</td></tr>
+          <tr><td>Mostly text messages</td><td class="num">80.3%</td><td class="num">88.3%</td><td class="num">91.0%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.3 Full detail — 100,000 customers</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th class="num">Cost/customer/mo</th><th class="num">Total cost/mo</th><th class="num">Money coming in/mo</th><th class="num">Profit margin</th></tr></thead>
+        <tbody>
+          <tr><td>Mostly app alerts + ₹99/month</td><td class="num">₹8.39</td><td class="num">₹8,39,000</td><td class="num">₹99,00,000</td><td class="num">91.5%</td></tr>
+          <tr><td>Mostly app alerts + ₹180/month</td><td class="num">₹9.99</td><td class="num">₹9,99,000</td><td class="num">₹1,80,00,000</td><td class="num">94.4%</td></tr>
+          <tr><td>Mostly app alerts + ₹250/month</td><td class="num">₹11.39</td><td class="num">₹11,39,000</td><td class="num">₹2,50,00,000</td><td class="num">95.4%</td></tr>
+          <tr><td>Mixed + ₹99/month</td><td class="num">₹11.89</td><td class="num">₹11,89,000</td><td class="num">₹99,00,000</td><td class="num">88.0%</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Mixed + ₹180/month (our main case)</strong></td><td class="num"><strong>₹13.49</strong></td><td class="num"><strong>₹13,49,000</strong></td><td class="num">₹1,80,00,000</td><td class="num"><strong>92.5%</strong></td></tr>
+          <tr><td>Mixed + ₹250/month</td><td class="num">₹14.89</td><td class="num">₹14,89,000</td><td class="num">₹2,50,00,000</td><td class="num">94.0%</td></tr>
+          <tr><td>Mostly text messages + ₹99/month</td><td class="num">₹24.89</td><td class="num">₹24,89,000</td><td class="num">₹99,00,000</td><td class="num">74.9%</td></tr>
+          <tr><td>Mostly text messages + ₹180/month</td><td class="num">₹26.49</td><td class="num">₹26,49,000</td><td class="num">₹1,80,00,000</td><td class="num">85.3%</td></tr>
+          <tr><td>Mostly text messages + ₹250/month</td><td class="num">₹27.89</td><td class="num">₹27,89,000</td><td class="num">₹2,50,00,000</td><td class="num">88.8%</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.4 Full detail — 1,000,000 customers</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th class="num">Cost/customer/mo</th><th class="num">Total cost/mo</th><th class="num">Money coming in/mo</th><th class="num">Profit margin</th></tr></thead>
+        <tbody>
+          <tr><td>Mostly app alerts + ₹99/month</td><td class="num">₹5.51</td><td class="num">₹55,06,000</td><td class="num">₹9,90,00,000</td><td class="num">94.4%</td></tr>
+          <tr><td>Mostly app alerts + ₹180/month</td><td class="num">₹7.11</td><td class="num">₹71,06,000</td><td class="num">₹18,00,00,000</td><td class="num">96.1%</td></tr>
+          <tr><td>Mostly app alerts + ₹250/month</td><td class="num">₹8.51</td><td class="num">₹85,06,000</td><td class="num">₹25,00,00,000</td><td class="num">96.6%</td></tr>
+          <tr><td>Mixed + ₹99/month</td><td class="num">₹8.51</td><td class="num">₹85,06,000</td><td class="num">₹9,90,00,000</td><td class="num">91.4%</td></tr>
+          <tr style="background:#eff6ff"><td><strong>Mixed + ₹180/month (our main case)</strong></td><td class="num"><strong>₹10.11</strong></td><td class="num"><strong>₹1,01,06,000</strong></td><td class="num">₹18,00,00,000</td><td class="num"><strong>94.4%</strong></td></tr>
+          <tr><td>Mixed + ₹250/month</td><td class="num">₹11.51</td><td class="num">₹1,15,06,000</td><td class="num">₹25,00,00,000</td><td class="num">95.4%</td></tr>
+          <tr><td>Mostly text messages + ₹99/month</td><td class="num">₹19.51</td><td class="num">₹1,95,06,000</td><td class="num">₹9,90,00,000</td><td class="num">80.3%</td></tr>
+          <tr><td>Mostly text messages + ₹180/month</td><td class="num">₹21.11</td><td class="num">₹2,11,06,000</td><td class="num">₹18,00,00,000</td><td class="num">88.3%</td></tr>
+          <tr><td>Mostly text messages + ₹250/month</td><td class="num">₹22.51</td><td class="num">₹2,25,06,000</td><td class="num">₹25,00,00,000</td><td class="num">91.0%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout ok">
+        <strong>What this tells us</strong>
+        Even in the <strong>worst case</strong> we tested (mostly text messages + customers paying only ₹99/month), we'd still keep 75–80% of revenue as profit at both sizes. The business holds up well under these swings because our two "must-pay" costs — ID verification and servers — are already small. The <strong>biggest thing we can control is how much we rely on text messages</strong>, not pricing: switching from mostly-texts to mostly-app-alerts roughly doubles our profit cushion (e.g., at 100,000 customers paying ₹180/month: 85.3% → 94.4%).
+      </div>
+
+      <div class="callout warn">
+        <strong>One reality check</strong>
+        App notifications don't always arrive reliably in India — many Android phone makers (like Xiaomi, Oppo, Vivo) aggressively shut down background apps to save battery, which can block notifications from getting through. So "mostly app alerts" is our best-case, cheapest scenario — in practice, we may need to lean on some text messages whether we want to or not. Treat the "Mixed" numbers as the realistic plan, and "mostly app alerts" as the best case if everything goes smoothly.
+      </div>
+    </section>
+
+    <footer class="footer"></footer>
+  </article>
+</body>
+</html>

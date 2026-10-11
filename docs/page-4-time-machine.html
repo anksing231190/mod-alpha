@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Alpha — What If I Invested on This Date?</title>
+<link rel="stylesheet" href="shared-styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+    .tm-header { margin-bottom: 1.8rem; }
+    .tm-header h1 { font-size: 1.7rem; margin-bottom: 0.4rem; }
+    .tm-header p { color: var(--text-dim); }
+
+    .input-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .journey-card-main {
+        padding: 1.8rem;
+        margin-bottom: 1.5rem;
+    }
+    .journey-top {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 1.2rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .journey-top h3 { font-size: 1.05rem; }
+    .current-val-badge {
+        background: var(--green-bg); color: var(--green);
+        padding: 0.4rem 0.9rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem;
+    }
+
+    .result-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+
+    @media (max-width: 900px) {
+        .input-panel { grid-template-columns: 1fr; }
+        .result-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="page">
+    <div class="eyebrow">⏰ Step 4 of 6 — Investment Simulator</div>
+    <div class="tm-header">
+        <h1>What if you had invested on this date?</h1>
+        <p>See how much your investment would be worth if you had invested at a different time.</p>
+    </div>
+
+    <div class="input-panel">
+        <div class="card">
+            <label class="field-label">Investment Date</label>
+            <input type="date" class="field-input" id="investDate" value="2021-01-15" onchange="runSimulation()">
+            <div class="chip-row">
+                <div class="chip" onclick="setDate('2020-01-15')">5Y ago</div>
+                <div class="chip" onclick="setDate('2022-01-15')">3Y ago</div>
+                <div class="chip active" onclick="setDate('2021-01-15')">Jan 2021</div>
+                <div class="chip" onclick="setDate('2023-06-01')">Jun 2023</div>
+            </div>
+        </div>
+        <div class="card">
+            <label class="field-label">Investment Amount</label>
+            <input type="number" class="field-input" id="investAmount" value="100000" step="5000" onchange="runSimulation()">
+            <div class="chip-row">
+                <div class="chip" onclick="setAmount(10000)">10K</div>
+                <div class="chip" onclick="setAmount(50000)">50K</div>
+                <div class="chip active" onclick="setAmount(100000)">1L</div>
+                <div class="chip" onclick="setAmount(500000)">5L</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card journey-card-main">
+        <div class="journey-top">
+            <h3>📈 Your Investment Journey</h3>
+            <span class="current-val-badge">Current Value: <span id="headerCurrentVal">₹3,42,560</span></span>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 320px;">
+            <canvas id="journeyChart"></canvas>
+        </div>
+    </div>
+
+    <div class="result-stats">
+        <div class="stat-card"><div class="stat-val" id="statCurrent">₹3,42,560</div><div class="stat-lbl">Current Value</div></div>
+        <div class="stat-card"><div class="stat-val positive" id="statGain">+₹2,42,560</div><div class="stat-lbl">Absolute Gain</div></div>
+        <div class="stat-card"><div class="stat-val positive" id="statReturn">+242.6%</div><div class="stat-lbl">Total Return</div></div>
+        <div class="stat-card"><div class="stat-val" id="statCagr">29.8%</div><div class="stat-lbl">CAGR</div></div>
+        <div class="stat-card"><div class="stat-val" id="statPeriod">5.7 years</div><div class="stat-lbl">Holding Period</div></div>
+    </div>
+
+    <div style="height: 1.5rem;"></div>
+
+    <section class="ai-insight-box">
+        <div class="ai-icon">✨</div>
+        <div>
+            <div class="ai-label">AI Insight</div>
+            <p id="tmInsightText">A ₹1,00,000 investment on 15 Jan 2021 would have grown to ₹3,42,560 today — a 29.8% CAGR. This period included two market corrections, but long-term holding significantly outperformed short-term exits.</p>
+        </div>
+    </section>
+</div>
+
+<div class="flow-footer">
+    <a href="page-3-performance-analytics.html" class="flow-nav-btn">
+        <div><div class="flow-nav-title">← Back: Performance Analytics</div><div class="flow-nav-sub">Monthly/Quarterly/Yearly returns</div></div>
+    </a>
+    <div class="flow-footer-step">Step 4 of 6</div>
+    <a href="page-5-mod-alpha.html" class="flow-nav-btn">
+        <div><div class="flow-nav-title">Next: MOD Alpha Analysis →</div><div class="flow-nav-sub">🤖 Compare SIP strategies</div></div>
+    </a>
+</div>
+
+<script src="shared-widgets.js"></script>
+<script>
+let journeyChart;
+
+function setDate(d) {
+    document.getElementById('investDate').value = d;
+    document.querySelectorAll('.input-panel .card:first-child .chip').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    runSimulation();
+}
+function setAmount(a) {
+    document.getElementById('investAmount').value = a;
+    document.querySelectorAll('.input-panel .card:last-child .chip').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+    runSimulation();
+}
+
+function runSimulation() {
+    const dateVal = document.getElementById('investDate').value;
+    const amount = parseFloat(document.getElementById('investAmount').value) || 100000;
+    const investDate = new Date(dateVal);
+    const today = new Date('2026-10-04');
+
+    const years = (today - investDate) / (1000 * 60 * 60 * 24 * 365.25);
+    const cagr = 0.298; // demo assumed CAGR based on fund history
+    const currentValue = amount * Math.pow(1 + cagr, years);
+    const gain = currentValue - amount;
+    const returnPct = (gain / amount) * 100;
+
+    document.getElementById('statCurrent').textContent = '₹' + Math.round(currentValue).toLocaleString('en-IN');
+    document.getElementById('statGain').textContent = '+₹' + Math.round(gain).toLocaleString('en-IN');
+    document.getElementById('statReturn').textContent = '+' + returnPct.toFixed(1) + '%';
+    document.getElementById('statCagr').textContent = (cagr*100).toFixed(1) + '%';
+    document.getElementById('statPeriod').textContent = years.toFixed(1) + ' years';
+    document.getElementById('headerCurrentVal').textContent = '₹' + Math.round(currentValue).toLocaleString('en-IN');
+
+    document.getElementById('tmInsightText').textContent =
+        `A ₹${amount.toLocaleString('en-IN')} investment on ${investDate.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})} would have grown to ₹${Math.round(currentValue).toLocaleString('en-IN')} today — a ${(cagr*100).toFixed(1)}% CAGR over ${years.toFixed(1)} years.`;
+
+    // Build journey points
+    const points = [];
+    const labels = [];
+    const totalMonths = Math.max(Math.round(years * 12), 1);
+    const step = Math.max(Math.round(totalMonths / 12), 1);
+    for (let m = 0; m <= totalMonths; m += step) {
+        const yrs = m / 12;
+        points.push(Math.round(amount * Math.pow(1 + cagr, yrs)));
+        const d = new Date(investDate);
+        d.setMonth(d.getMonth() + m);
+        labels.push(d.getFullYear());
+    }
+    points.push(Math.round(currentValue));
+    labels.push(today.getFullYear());
+
+    const ctx = document.getElementById('journeyChart').getContext('2d');
+    if (journeyChart) journeyChart.destroy();
+    journeyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Portfolio Value',
+                data: points,
+                borderColor: '#22d3ee',
+                backgroundColor: (context) => {
+                    const g = context.chart.ctx.createLinearGradient(0,0,0,300);
+                    g.addColorStop(0, 'rgba(34,211,238,0.35)');
+                    g.addColorStop(1, 'rgba(34,211,238,0)');
+                    return g;
+                },
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#22d3ee',
+                pointBorderColor: '#0a0e1c',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(18,25,52,0.95)',
+                    borderColor: '#22d3ee',
+                    borderWidth: 1,
+                    padding: 12,
+                    callbacks: { label: (c) => '₹' + c.parsed.y.toLocaleString('en-IN') }
+                }
+            },
+            scales: {
+                y: { ticks: { color: '#64748b', callback: v => '₹' + (v/1000) + 'K' }, grid: { color: 'rgba(35,43,77,0.5)' } },
+                x: { ticks: { color: '#64748b' }, grid: { display: false } }
+            }
+        }
+    });
+}
+
+window.addEventListener('load', runSimulation);
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mod Alpha — Log In</title>
+<link rel="stylesheet" href="shared-styles.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('modAlphaTheme') || 'dark');</script>
+<style>
+    body { min-height: 100vh; overflow-x: hidden; }
+
+    .auth-shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+    }
+
+    /* ============== LEFT: ANIMATED HERO ============== */
+    .auth-hero {
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(ellipse 900px 600px at 30% 20%, rgba(79,127,255,0.18), transparent),
+                    radial-gradient(ellipse 900px 600px at 80% 90%, rgba(139,92,246,0.16), transparent),
+                    linear-gradient(160deg, #0a0e1c 0%, #0d1326 60%, #0a0e1c 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3rem 3rem 0;
+    }
+
+    .auth-hero-top { position: relative; z-index: 5; }
+
+    .auth-brand {
+        display: flex; align-items: center; gap: 0.6rem;
+        font-weight: 800; font-size: 1.3rem; margin-bottom: 3rem;
+    }
+    .auth-brand .brand-icon {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: var(--gradient-brand); display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; box-shadow: var(--glow-blue);
+    }
+
+    .auth-hero h1 {
+        font-size: 2.6rem; font-weight: 800; line-height: 1.18; margin-bottom: 1rem;
+        max-width: 480px;
+        animation: heroFadeUp 0.8s ease-out both;
+    }
+    .auth-hero h1 .grad {
+        background: var(--gradient-ai); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .auth-hero p {
+        color: var(--text-dim); font-size: 1.02rem; max-width: 420px; margin-bottom: 2rem;
+        animation: heroFadeUp 0.8s ease-out 0.15s both;
+    }
+
+    @keyframes heroFadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-stats { display: flex; gap: 2.2rem; animation: heroFadeUp 0.8s ease-out 0.3s both; }
+    .auth-stat .as-val { font-size: 1.3rem; font-weight: 800; color: var(--primary, var(--blue)); }
+    .auth-stat .as-lbl { font-size: 0.72rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 0.2rem; }
+
+    /* ---- Animated price chart (SVG draw-on) ---- */
+    .chart-stage {
+        position: relative;
+        flex: 1;
+        min-height: 220px;
+        margin-top: 1.5rem;
+    }
+    .chart-stage svg { width: 100%; height: 100%; overflow: visible; }
+
+    .price-line {
+        fill: none;
+        stroke: url(#lineGrad);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1400;
+        stroke-dashoffset: 1400;
+        animation: drawLine 2.4s cubic-bezier(.65,0,.35,1) 0.4s forwards;
+        filter: drop-shadow(0 0 8px rgba(34,211,238,0.5));
+    }
+    @keyframes drawLine {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .price-area {
+        opacity: 0;
+        animation: fadeIn 1.2s ease-out 2.2s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    .price-dot {
+        opacity: 0;
+        animation: dotPop 0.5s ease-out forwards, dotPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes dotPop { to { opacity: 1; } }
+    @keyframes dotPulse {
+        0%, 100% { r: 4; opacity: 1; }
+        50% { r: 6; opacity: 0.7; }
+    }
+
+    /* ---- Floating gain chips ---- */
+    .float-chip {
+        position: absolute;
+        background: rgba(17,25,52,0.75);
+        border: 1px solid rgba(79,127,255,0.35);
+        backdrop-filter: blur(6px);
+        border-radius: 20px;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--text);
+        white-space: nowrap;
+        opacity: 0;
+        animation: chipFloat 7s ease-in-out infinite;
+        z-index: 4;
+    }
+    .float-chip.green { color: var(--green); border-color: rgba(34,197,94,0.4); }
+    .float-chip.purple { color: var(--purple-light); border-color: rgba(139,92,246,0.4); }
+
+    @keyframes chipFloat {
+        0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+        10% { opacity: 1; transform: translateY(0) scale(1); }
+        85% { opacity: 1; }
+        100% { opacity: 0; transform: translateY(-40px) scale(0.95); }
+    }
+
+    /* ---- Candlestick strip ---- */
+    .candle-strip {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: flex-end;
+        gap: 7px;
+        height: 90px;
+        padding: 0 0 1.6rem;
+        opacity: 0.85;
+    }
+    .candle { position: relative; width: 7px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .candle .wick { width: 1px; background: rgba(148,163,184,0.5); }
+    .candle .body { width: 7px; border-radius: 2px; animation: candleGrow 3.6s ease-in-out infinite; }
+    .candle.up .body { background: var(--green); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+    .candle.down .body { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.35); }
+
+    @keyframes candleGrow {
+        0%, 100% { transform: scaleY(0.55); }
+        50% { transform: scaleY(1); }
+    }
+
+    /* ---- AI orb with orbiting particles ---- */
+    .ai-orb-wrap {
+        position: absolute;
+        top: 2.2rem;
+        right: 3rem;
+        width: 150px; height: 150px;
+        z-index: 4;
+    }
+    .ai-orb-core {
+        position: absolute; top: 50%; left: 50%; width: 52px; height: 52px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: var(--gradient-ai);
+        box-shadow: 0 0 40px rgba(139,92,246,0.6);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem;
+        animation: orbPulse 3s ease-in-out infinite;
+    }
+    @keyframes orbPulse {
+        0%, 100% { box-shadow: 0 0 28px rgba(139,92,246,0.45); }
+        50% { box-shadow: 0 0 48px rgba(139,92,246,0.75); }
+    }
+    .ai-orbit {
+        position: absolute; inset: 0;
+        border: 1px dashed rgba(139,92,246,0.25);
+        border-radius: 50%;
+        animation: orbitSpin 14s linear infinite;
+    }
+    .ai-orbit.o2 { inset: 22px; animation-duration: 9s; animation-direction: reverse; border-color: rgba(34,211,238,0.25); }
+    @keyframes orbitSpin { to { transform: rotate(360deg); } }
+    .ai-particle {
+        position: absolute; width: 7px; height: 7px; border-radius: 50%;
+        background: var(--cyan); box-shadow: 0 0 10px rgba(34,211,238,0.8);
+        top: -3.5px; left: 50%; margin-left: -3.5px;
+    }
+    .ai-orbit.o2 .ai-particle { background: var(--purple-light); box-shadow: 0 0 10px rgba(167,139,250,0.8); }
+
+    .auth-hero-bottom-fade {
+        position: relative; z-index: 2;
+        background: linear-gradient(180deg, transparent, rgba(0,0,0,0.25));
+        padding-top: 1rem;
+    }
+
+    /* ============== RIGHT: FORM PANEL ============== */
+    .auth-form-panel {
+        display: flex; align-items: center; justify-content: center;
+        padding: 2.5rem;
+        background: var(--bg);
+    }
+    .auth-form-card { width: 100%; max-width: 400px; }
+    .auth-form-card h2 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .auth-form-card .afc-sub { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.8rem; }
+
+    .auth-tabs {
+        display: flex; background: var(--card); border: 1px solid var(--border);
+        border-radius: 10px; padding: 0.3rem; margin-bottom: 1.6rem;
+    }
+    .auth-tab {
+        flex: 1; text-align: center; padding: 0.6rem; border-radius: 7px;
+        font-size: 0.88rem; font-weight: 700; color: var(--text-dim); cursor: pointer; border: none; background: transparent;
+        transition: all 0.25s;
+    }
+    .auth-tab.active { background: var(--gradient-brand); color: #fff; }
+
+    .auth-fields { display: flex; flex-direction: column; gap: 1.1rem; }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: flex; flex-direction: column; gap: 1.1rem; animation: panelIn 0.35s ease-out; }
+    @keyframes panelIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .auth-row-between { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+    .auth-link { color: var(--blue-light); cursor: pointer; }
+    .auth-link:hover { text-decoration: underline; }
+
+    .auth-submit { width: 100%; margin-top: 0.4rem; position: relative; }
+    .auth-submit.loading { pointer-events: none; opacity: 0.85; }
+    .auth-spinner {
+        display: none; width: 15px; height: 15px; border-radius: 50%;
+        border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff;
+        animation: spin 0.7s linear infinite; margin-right: 0.5rem;
+    }
+    .auth-submit.loading .auth-spinner { display: inline-block; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .auth-divider { display: flex; align-items: center; gap: 0.8rem; margin: 1.4rem 0; color: var(--text-faint); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .auth-skip { text-align: center; }
+    .auth-skip a { font-size: 0.85rem; color: var(--text-faint); }
+    .auth-skip a:hover { color: var(--blue-light); }
+
+    .auth-error {
+        display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+        color: var(--red); font-size: 0.8rem; padding: 0.6rem 0.9rem; border-radius: 8px; margin-bottom: 0.2rem;
+    }
+    .auth-error.show { display: block; animation: panelIn 0.25s ease-out; }
+
+    .auth-check-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-dim); }
+
+    @media (max-width: 900px) {
+        .auth-shell { grid-template-columns: 1fr; }
+        .auth-hero { padding: 2rem 1.5rem 0; min-height: 300px; }
+        .auth-hero h1 { font-size: 1.8rem; }
+        .ai-orb-wrap { display: none; }
+        .auth-stats { flex-wrap: wrap; row-gap: 0.8rem; }
+        .candle-strip { height: 60px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="auth-shell">
+    <!-- ============== LEFT: ANIMATED HERO ============== -->
+    <div class="auth-hero">
+        <div class="ai-orb-wrap">
+            <div class="ai-orbit o1"><div class="ai-particle"></div></div>
+            <div class="ai-orbit o2"><div class="ai-particle"></div></div>
+            <div class="ai-orb-core"><svg class="ai-spark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
+        </div>
+
+        <div class="auth-hero-top">
+            <div class="auth-brand">
+                <span class="brand-icon">⚡</span>
+                <span>Mod Alpha</span>
+            </div>
+            <h1>Invest smarter with <span class="grad">AI-timed</span> SIP decisions</h1>
+            <p>Mod Alpha analyzes historical fund behavior to suggest better investment dates — so your money works harder, every single month.</p>
+            <div class="auth-stats">
+                <div class="auth-stat"><div class="as-val">12,500+</div><div class="as-lbl">Investors</div></div>
+                <div class="auth-stat"><div class="as-val">8,500+</div><div class="as-lbl">Funds tracked</div></div>
+                <div class="auth-stat"><div class="as-val">+15.7%</div><div class="as-lbl">Avg. extra earnings</div></div>
+            </div>
+        </div>
+
+        <div class="chart-stage">
+            <div class="float-chip green" style="left:8%; animation-delay:0.5s;">📈 +18.5% YTD</div>
+            <div class="float-chip purple" style="left:55%; animation-delay:2.2s;">✨ AI Insight</div>
+            <div class="float-chip green" style="left:30%; animation-delay:4s;">₹ Extra Earnings</div>
+            <div class="float-chip purple" style="left:75%; animation-delay:5.6s;">🤖 Best date: 12th</div>
+
+            <svg viewBox="0 0 600 220" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#4f7fff" />
+                        <stop offset="100%" stop-color="#22d3ee" />
+                    </linearGradient>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.35" />
+                        <stop offset="100%" stop-color="#22d3ee" stop-opacity="0" />
+                    </linearGradient>
+                </defs>
+                <path class="price-area" fill="url(#areaGrad)"
+                      d="M0,170 C60,160 90,190 140,150 C190,110 220,140 270,100 C320,60 360,120 410,85 C460,50 500,90 550,40 L600,20 L600,220 L0,220 Z" />
+                <path class="price-line"
+                      d="M0,170 C60,160 90,190 140,150 C190,110 220,140 270,100 C320,60 360,120 410,85 C460,50 500,90 550,40 L600,20" />
+                <circle class="price-dot" cx="270" cy="100" r="4" fill="#4f7fff" style="animation-delay:1.6s, 2.6s;"/>
+                <circle class="price-dot" cx="410" cy="85" r="4" fill="#22d3ee" style="animation-delay:1.9s, 2.9s;"/>
+                <circle class="price-dot" cx="600" cy="20" r="5" fill="#a78bfa" style="animation-delay:2.3s, 3.3s;"/>
+            </svg>
+        </div>
+
+        <div class="auth-hero-bottom-fade">
+            <div class="candle-strip">
+                <div class="candle up" style="animation-delay:0s;"><div class="wick" style="height:14px;"></div><div class="body" style="height:34px; animation-delay:0s;"></div></div>
+                <div class="candle down" style="animation-delay:0.2s;"><div class="wick" style="height:10px;"></div><div class="body" style="height:22px; animation-delay:0.3s;"></div></div>
+                <div class="candle up" style="animation-delay:0.4s;"><div class="wick" style="height:18px;"></div><div class="body" style="height:48px; animation-delay:0.6s;"></div></div>
+                <div class="candle up" style="animation-delay:0.1s;"><div class="wick" style="height:12px;"></div><div class="body" style="height:28px; animation-delay:0.9s;"></div></div>
+                <div class="candle down" style="animation-delay:0.5s;"><div class="wick" style="height:8px;"></div><div class="body" style="height:18px; animation-delay:1.2s;"></div></div>
+                <div class="candle up" style="animation-delay:0.3s;"><div class="wick" style="height:20px;"></div><div class="body" style="height:56px; animation-delay:1.5s;"></div></div>
+                <div class="candle up" style="animation-delay:0.6s;"><div class="wick" style="height:16px;"></div><div class="body" style="height:40px; animation-delay:1.8s;"></div></div>
+                <div class="candle down" style="animation-delay:0.2s;"><div class="wick" style="height:10px;"></div><div class="body" style="height:24px; animation-delay:2.1s;"></div></div>
+                <div class="candle up" style="animation-delay:0.4s;"><div class="wick" style="height:22px;"></div><div class="body" style="height:62px; animation-delay:2.4s;"></div></div>
+                <div class="candle up" style="animation-delay:0.1s;"><div class="wick" style="height:14px;"></div><div class="body" style="height:36px; animation-delay:2.7s;"></div></div>
+                <div class="candle down" style="animation-delay:0.3s;"><div class="wick" style="height:9px;"></div><div class="body" style="height:20px; animation-delay:3.0s;"></div></div>
+                <div class="candle up" style="animation-delay:0.5s;"><div class="wick" style="height:24px;"></div><div class="body" style="height:70px; animation-delay:3.3s;"></div></div>
+                <div class="candle up" style="animation-delay:0.2s;"><div class="wick" style="height:17px;"></div><div class="body" style="height:46px; animation-delay:3.6s;"></div></div>
+                <div class="candle down" style="animation-delay:0.6s;"><div class="wick" style="height:11px;"></div><div class="body" style="height:26px; animation-delay:3.9s;"></div></div>
+                <div class="candle up" style="animation-delay:0.4s;"><div class="wick" style="height:19px;"></div><div class="body" style="height:52px; animation-delay:4.2s;"></div></div>
+                <div class="candle up" style="animation-delay:0.1s;"><div class="wick" style="height:21px;"></div><div class="body" style="height:60px; animation-delay:4.5s;"></div></div>
+                <div class="candle down" style="animation-delay:0.3s;"><div class="wick" style="height:8px;"></div><div class="body" style="height:16px; animation-delay:4.8s;"></div></div>
+                <div class="candle up" style="animation-delay:0.5s;"><div class="wick" style="height:15px;"></div><div class="body" style="height:38px; animation-delay:5.1s;"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============== RIGHT: AUTH FORM ============== -->
+    <div class="auth-form-panel">
+        <div class="auth-form-card">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Log In</button>
+                <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- LOGIN -->
+            <div class="auth-panel active" id="panelLogin">
+                <h2>Welcome back</h2>
+                <p class="afc-sub">Log in to see your AI-powered fund insights.</p>
+                <div class="auth-error" id="loginError">Please enter both email and password.</div>
+                <div class="auth-fields">
+                    <div>
+                        <label class="field-label">Email</label>
+                        <input type="email" class="field-input" id="loginEmail" placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label class="field-label">Password</label>
+                        <input type="password" class="field-input" id="loginPassword" placeholder="••••••••">
+                    </div>
+                    <div class="auth-row-between">
+                        <label class="auth-check-row"><input type="checkbox" checked> Remember me</label>
+                        <span class="auth-link">Forgot password?</span>
+                    </div>
+                    <button class="btn btn-primary auth-submit" id="loginBtn" onclick="handleLogin()">
+                        <span class="auth-spinner"></span><span class="auth-submit-label">Log In</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SIGN UP -->
+            <div class="auth-panel" id="panelSignup">
+                <h2>Create your account</h2>
+                <p class="afc-sub">Join 12,500+ investors making smarter SIP decisions.</p>
+                <div class="auth-error" id="signupError">Please fill in all fields to continue.</div>
+                <div class="auth-fields">
+                    <div>
+                        <label class="field-label">Full name</label>
+                        <input type="text" class="field-input" id="signupName" placeholder="Your name">
+                    </div>
+                    <div>
+                        <label class="field-label">Email</label>
+                        <input type="email" class="field-input" id="signupEmail" placeholder="you@example.com">
+                    </div>
+                    <div>
+                        <label class="field-label">Password</label>
+                        <input type="password" class="field-input" id="signupPassword" placeholder="Create a password">
+                    </div>
+                    <label class="auth-check-row"><input type="checkbox" checked> I agree to the Terms &amp; Privacy Policy</label>
+                    <button class="btn btn-primary auth-submit" id="signupBtn" onclick="handleSignup()">
+                        <span class="auth-spinner"></span><span class="auth-submit-label">Create Account</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="auth-divider">or</div>
+            <div class="auth-skip">
+                <a href="#" onclick="skipLogin(event)">Skip for now, explore as guest →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(which) {
+        document.getElementById('tabLogin').classList.toggle('active', which === 'login');
+        document.getElementById('tabSignup').classList.toggle('active', which === 'signup');
+        document.getElementById('panelLogin').classList.toggle('active', which === 'login');
+        document.getElementById('panelSignup').classList.toggle('active', which === 'signup');
+    }
+
+    function goToApp(name) {
+        localStorage.setItem('modAlphaAuth', 'true');
+        localStorage.setItem('modAlphaUserName', name || 'Investor');
+        window.location.href = 'page-1-home.html';
+    }
+
+    function setLoading(btn, isLoading) {
+        btn.classList.toggle('loading', isLoading);
+    }
+
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const err = document.getElementById('loginError');
+        if (!email || !password) {
+            err.classList.add('show');
+            return;
+        }
+        err.classList.remove('show');
+        const btn = document.getElementById('loginBtn');
+        setLoading(btn, true);
+        setTimeout(() => {
+            const name = email.split('@')[0];
+            goToApp(name.charAt(0).toUpperCase() + name.slice(1));
+        }, 900);
+    }
+
+    function handleSignup() {
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value.trim();
+        const err = document.getElementById('signupError');
+        if (!name || !email || !password) {
+            err.classList.add('show');
+            return;
+        }
+        err.classList.remove('show');
+        const btn = document.getElementById('signupBtn');
+        setLoading(btn, true);
+        setTimeout(() => {
+            goToApp(name);
+        }, 900);
+    }
+
+    function skipLogin(e) {
+        e.preventDefault();
+        goToApp('Guest');
+    }
+
+    // If already logged in, skip straight to the app
+    window.addEventListener('load', () => {
+        if (localStorage.getItem('modAlphaAuth') === 'true') {
+            window.location.href = 'page-1-home.html';
+        }
+    });
+</script>
+</body>
+</html>

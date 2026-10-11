@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mod Alpha - Smart SIP Timing with AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #059669;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2563eb, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn-install {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-install:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 100%);
+            display: flex;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(5, 150, 105, 0.1) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(30px); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: slideInLeft 0.8s ease-out 0.2s both;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            animation: slideInLeft 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            animation: slideInLeft 0.8s ease-out 0.6s both;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Visualization */
+        .hero-visual {
+            position: relative;
+            height: 400px;
+            animation: slideInRight 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .chart-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            animation: growUp 1s ease-out 0.5s both;
+        }
+
+        .bar:nth-child(1) { height: 40%; }
+        .bar:nth-child(2) { height: 55%; }
+        .bar:nth-child(3) { height: 65%; }
+        .bar:nth-child(4) { height: 80%; animation-delay: 0.7s; }
+        .bar:nth-child(5) { height: 95%; animation-delay: 0.9s; }
+        .bar:nth-child(6) { height: 100%; animation-delay: 1.1s; }
+
+        @keyframes growUp {
+            from {
+                height: 0;
+                opacity: 0;
+            }
+            to {
+                height: var(--h);
+                opacity: 1;
+            }
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .metric:first-of-type {
+            border-top: none;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Features Section */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--muted);
+            margin-bottom: 4rem;
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .feature-card:nth-child(2) { animation-delay: 0.1s; }
+        .feature-card:nth-child(3) { animation-delay: 0.2s; }
+        .feature-card:nth-child(4) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            padding-top: 3rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            animation: popIn 0.6s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .step h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+        }
+
+        .demo-section .section-title {
+            color: white;
+        }
+
+        .demo-section .section-subtitle {
+            color: #cbd5e1;
+        }
+
+        .demo-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            color: var(--text);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .demo-result {
+            background: linear-gradient(135deg, #f0f9ff 0%, #ecfdf5 100%);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--border);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .result-value {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .gains {
+            background: white;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .gains h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .gains p {
+            color: var(--text);
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        /* Pricing Section */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 16px 32px rgba(37, 99, 235, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(5, 150, 105, 0.05));
+            position: relative;
+            top: -20px;
+        }
+
+        .badge-featured {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .price-period {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 2rem 0;
+            font-size: 0.95rem;
+        }
+
+        .features-list li {
+            list-style: none;
+            padding: 0.8rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--muted);
+        }
+
+        .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .pricing-card .btn-primary {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Comparison Section */
+        .comparison-table {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: linear-gradient(135deg, #f0f9ff, #ecfdf5);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .check {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Trust Section */
+        .trust-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 100%);
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .trust-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .trust-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trust-label {
+            color: var(--muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 2rem;
+            text-align: center;
+            color: #cbd5e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .demo-header {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loading:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Mod Alpha</div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#demo">AI Demo</a></li>
+        </ul>
+        <button class="btn-install">Install App</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Smart SIP Timing Powered by AI</h1>
+                <p>Stop losing to fixed SIP dates. Let AI find the perfect moment each month to invest in your mutual funds and ETFs.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary">Get Started Free</button>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="chart-card">
+                    <div class="chart-title">📈 Extra Earnings Potential</div>
+                    <div class="mini-chart">
+                        <div class="bar" style="--h: 40%"></div>
+                        <div class="bar" style="--h: 55%"></div>
+                        <div class="bar" style="--h: 65%"></div>
+                        <div class="bar" style="--h: 80%"></div>
+                        <div class="bar" style="--h: 95%"></div>
+                        <div class="bar" style="--h: 100%"></div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Your Returns</span>
+                        <span class="metric-value">₹15,42,000</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Mod Alpha Returns</span>
+                        <span class="metric-value">₹17,89,000</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Extra Earnings</span>
+                        <span class="metric-value">₹2,47,000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <h2 class="section-title">Powerful Features</h2>
+        <p class="section-subtitle">Everything you need for smart SIP investing</p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>AI-Powered Dates</h3>
+                <p>Our AI analyzes volatility, trends, and historical patterns to suggest the 1-2 best dates each month to invest.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Track Extra Earnings</h3>
+                <p>See exactly how much extra you've earned by following Mod Alpha dates vs your original fixed SIP schedule.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔗</div>
+                <h3>Broker Linking</h3>
+                <p>Safely connect your Zerodha account. No passwords shared. We secure everything with military-grade encryption.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>One-Tap Orders</h3>
+                <p>Execute recommended orders directly from the app with a single tap. Fast, secure, and verified.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔔</div>
+                <h3>Smart Notifications</h3>
+                <p>Get timely reminders when it's fund-ready, detect double-buys before they happen, and stay on track.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3>Hindi Support</h3>
+                <p>Full app experience in Hindi with large text support for accessibility. Investing in your language.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" style="background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 100%);">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-subtitle">Simple 4-step process to smarter investing</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Link Your Broker</h3>
+                <p>Connect your Zerodha account securely via OAuth. We never store passwords.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Import Your SIPs</h3>
+                <p>We detect your mutual funds and ETF SIPs automatically using account aggregation.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Get Smart Dates</h3>
+                <p>AI recommends 1-2 optimal dates each month to invest instead of your fixed date.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Track Earnings</h3>
+                <p>Watch your Extra Earnings grow as you invest on smarter dates. Proven results.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Demo Section -->
+    <section class="section demo-section" id="demo">
+        <h2 class="section-title">Try the AI Demo</h2>
+        <p class="section-subtitle">See how much smarter timing could earn you</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <div class="input-group">
+                    <label for="fund">Select Mutual Fund</label>
+                    <select id="fund" onchange="updateDemo()">
+                        <option value="nifty50">Nifty 50 Index Fund (ICICI Direct)</option>
+                        <option value="midcap">Midcap 150 Fund (Axis)</option>
+                        <option value="flexi">Flexi Cap Fund (Mirae Asset)</option>
+                        <option value="hybrid">Hybrid Fund (HDFC)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="amount">Monthly Investment</label>
+                    <input type="number" id="amount" value="10000" onchange="updateDemo()" min="1000" step="1000">
+                </div>
+            </div>
+            <div id="demoResult"></div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="section" id="compare">
+        <h2 class="section-title">Fixed Date vs Smart Dates</h2>
+        <p class="section-subtitle">See the difference over a 5-year period</p>
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Fixed SIP (1st of month)</th>
+                        <th>Mod Alpha (Smart Dates)</th>
+                        <th>Advantage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Invested</td>
+                        <td>₹6,00,000</td>
+                        <td>₹6,00,000</td>
+                        <td>Same</td>
+                    </tr>
+                    <tr>
+                        <td>Final Value (5 years)</td>
+                        <td>₹9,42,000</td>
+                        <td>₹10,18,000</td>
+                        <td class="check">+₹76,000</td>
+                    </tr>
+                    <tr>
+                        <td>Average Cost Per Unit</td>
+                        <td>₹127.40</td>
+                        <td>₹118.90</td>
+                        <td class="check">6.7% lower</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Units Bought</td>
+                        <td>4,713</td>
+                        <td>5,043</td>
+                        <td class="check">+330 units</td>
+                    </tr>
+                    <tr>
+                        <td>XIRR</td>
+                        <td>9.8%</td>
+                        <td>11.4%</td>
+                        <td class="check">+160 bps</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Trust & Compliance -->
+    <section class="section trust-section" id="trust">
+        <h2 class="section-title">Trusted & Regulated</h2>
+        <p class="section-subtitle">Built with compliance at every step</p>
+        <div class="trust-grid">
+            <div class="trust-card">
+                <div class="trust-number">100%</div>
+                <p>SEBI Registered Investment Advisor</p>
+                <div class="trust-label">Regulated & Audited</div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-number">5+ Yrs</div>
+                <p>Complete Advisory Audit Trail</p>
+                <div class="trust-label">Full Transparency</div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-number">Military</div>
+                <p>Grade Encryption (AES-256)</p>
+                <div class="trust-label">Data Security</div>
+            </div>
+            <div class="trust-card">
+                <div class="trust-number">Zero</div>
+                <p>Money Lock-in or Holding</p>
+                <div class="trust-label">Your Control Always</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+        <h2 class="section-title">Simple Pricing</h2>
+        <p class="section-subtitle">No hidden fees. Cancel anytime.</p>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Monthly</h3>
+                <div class="price">₹199</div>
+                <div class="price-period">/month, cancel anytime</div>
+                <ul class="features-list">
+                    <li>Smart SIP dates</li>
+                    <li>Extra earnings tracking</li>
+                    <li>One-tap orders</li>
+                    <li>Push notifications</li>
+                    <li>Email support</li>
+                </ul>
+                <button class="btn-primary">Start Free Trial</button>
+            </div>
+            <div class="pricing-card featured">
+                <div class="badge-featured">POPULAR</div>
+                <h3>Quarterly</h3>
+                <div class="price">₹499</div>
+                <div class="price-period">/3 months (save 17%)</div>
+                <ul class="features-list">
+                    <li>Smart SIP dates</li>
+                    <li>Extra earnings tracking</li>
+                    <li>One-tap orders</li>
+                    <li>Push + SMS notifications</li>
+                    <li>Priority support</li>
+                    <li>Portfolio insights</li>
+                </ul>
+                <button class="btn-primary">Start Free Trial</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Half-Yearly</h3>
+                <div class="price">₹899</div>
+                <div class="price-period">/6 months (save 25%)</div>
+                <ul class="features-list">
+                    <li>All Quarterly features</li>
+                    <li>Performance reports</li>
+                    <li>UPI AutoPay</li>
+                    <li>Family accounts (1)</li>
+                    <li>24/7 priority support</li>
+                </ul>
+                <button class="btn-primary">Start Free Trial</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" style="text-align: center; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border-radius: 12px;">
+        <h2 style="color: white; margin-bottom: 1rem;">Ready to Invest Smarter?</h2>
+        <p style="color: rgba(255,255,255,0.9); margin-bottom: 2rem; font-size: 1.1rem;">Join thousands of investors earning more through intelligent SIP timing.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button class="btn-primary" style="background: white; color: var(--primary); border: none;">Download on iOS</button>
+            <button class="btn-primary" style="background: white; color: var(--primary); border: none;">Download on Android</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Mod Alpha</h4>
+                <p>Smart SIP timing for mutual funds and ETFs, powered by AI. Invest smarter.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">How It Works</a></li>
+                    <li><a href="#">Methodology</a></li>
+                    <li><a href="#">Performance</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Compliance</a></li>
+                    <li><a href="#">SCORES</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Mod Alpha. SEBI Registered Investment Advisor. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function updateDemo() {
+            const fund = document.getElementById('fund').value;
+            const amount = parseInt(document.getElementById('amount').value) || 10000;
+
+            const fundData = {
+                nifty50: { name: 'Nifty 50 Index', baseReturn: 15.5, variance: 8 },
+                midcap: { name: 'Midcap 150', baseReturn: 18.2, variance: 12 },
+                flexi: { name: 'Flexi Cap Fund', baseReturn: 17.1, variance: 10 },
+                hybrid: { name: 'Hybrid Fund', baseReturn: 12.3, variance: 6 }
+            };
+
+            const data = fundData[fund];
+            const fixedReturn = amount * 60 * (1 + (data.baseReturn - 2) / 100);
+            const smartReturn = amount * 60 * (1 + data.baseReturn / 100);
+            const extraEarnings = smartReturn - fixedReturn;
+
+            const resultHTML = `
+                <div class="demo-result">
+                    <div class="result-item">
+                        <span class="result-label">Fund Selected</span>
+                        <span class="result-value">${data.name}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Monthly Investment</span>
+                        <span class="result-value">₹${amount.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">5-Year Value (Fixed SIP)</span>
+                        <span class="result-value">₹${Math.round(fixedReturn).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">5-Year Value (Smart Dates)</span>
+                        <span class="result-value" style="color: var(--primary);">₹${Math.round(smartReturn).toLocaleString('en-IN')}</span>
+                    </div>
+                    <div class="gains">
+                        <h4>💰 Extra Earnings with Mod Alpha</h4>
+                        <p>₹${Math.round(extraEarnings).toLocaleString('en-IN')}</p>
+                        <p style="font-size: 0.9rem; color: var(--muted); margin-top: 0.5rem;">That's ${(extraEarnings/fixedReturn*100).toFixed(1)}% more than fixed SIP!</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('demoResult').innerHTML = resultHTML;
+        }
+
+        // Initialize demo on page load
+        window.addEventListener('load', updateDemo);
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
