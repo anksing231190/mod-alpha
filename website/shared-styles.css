@@ -35,20 +35,6 @@
 /* ===== THEME VARIANTS ===== */
 /* Default (no attribute) = Dark, defined above. */
 
-:root[data-theme="medium"] {
-    --bg: #3a3a3e;
-    --bg-alt: #434347;
-    --nav-bg: rgba(58, 58, 62, 0.85);
-    --card: #4a4a4f;
-    --card-alt: #525257;
-    --card-hover: #5c5c62;
-    --border: #656569;
-    --border-light: #78787d;
-    --text: #f1f1f2;
-    --text-dim: #c7c7ca;
-    --text-faint: #9d9da1;
-}
-
 :root[data-theme="light"] {
     --bg: #f4f6fb;
     --bg-alt: #ffffff;

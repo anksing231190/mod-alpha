@@ -18,7 +18,10 @@ function getUserPlan() {
 
 /* ===== THEME ===== */
 function getStoredTheme() {
-    return localStorage.getItem('modAlphaTheme') || 'dark';
+    const stored = localStorage.getItem('modAlphaTheme');
+    // 'medium' theme was removed — fall back anyone still on it to dark
+    if (stored === 'medium') return 'dark';
+    return stored || 'dark';
 }
 
 function applyTheme(theme) {
@@ -55,7 +58,6 @@ function navHTML() {
                 <div class="user-dropdown-label">Theme</div>
                 <div class="theme-options">
                     <button class="theme-opt ${theme === 'light' ? 'active' : ''}" data-theme="light"><span class="ti">☀️</span>Light</button>
-                    <button class="theme-opt ${theme === 'medium' ? 'active' : ''}" data-theme="medium"><span class="ti">🌗</span>Medium</button>
                     <button class="theme-opt ${theme === 'dark' ? 'active' : ''}" data-theme="dark"><span class="ti">🌙</span>Dark</button>
                 </div>
                 <a href="subscription.html" class="user-dropdown-item">💳 Subscription</a>
