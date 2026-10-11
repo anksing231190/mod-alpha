@@ -41,8 +41,6 @@ function navHTML() {
         <a href="page-2-fund-selection.html">Explore</a>
         <a href="page-3-performance-analytics.html">Tools</a>
         <a href="page-6-ai-insights-chat.html">AI Insights</a>
-        <a href="#learn">Learn</a>
-        <a href="#watchlist">Watchlist</a>
     </div>
     <div class="topnav-right">
         <div class="search-box">🔍 Search funds...</div>
