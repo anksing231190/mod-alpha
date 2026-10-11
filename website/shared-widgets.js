@@ -40,7 +40,7 @@ function navHTML() {
     <div class="topnav-links">
         <a href="page-2-fund-selection.html">Explore</a>
         <a href="page-3-performance-analytics.html">Tools</a>
-        <a href="page-6-ai-insights-chat.html" class="ai-link">✨ AI Insights</a>
+        <a href="page-6-ai-insights-chat.html">AI Insights</a>
         <a href="#learn">Learn</a>
         <a href="#watchlist">Watchlist</a>
     </div>
@@ -207,12 +207,11 @@ function sendWidgetMessage(predefined) {
 
 /* ===== ACTIVITY TOAST (bottom-left, simulated — not real user events) ===== */
 const ACTIVITY_MESSAGES = [
-    { icon: '✨', text: '<strong>Someone</strong> just started a MOD Alpha SIP' },
-    { icon: '📊', text: '<strong>An investor</strong> explored Nifty 50 Index Fund performance' },
-    { icon: '📅', text: '<strong>Someone</strong> just found their best SIP date' },
-    { icon: '🤖', text: '<strong>An investor</strong> asked Mod Alpha AI a question' },
-    { icon: '💬', text: '<strong>Someone</strong> compared two mutual funds' },
-    { icon: '📈', text: '<strong>An investor</strong> ran the Time Machine on a 5-year SIP' }
+    { icon: '👋', text: '<strong>Someone</strong> just joined Mod Alpha' },
+    { icon: '👋', text: '<strong>A new investor</strong> signed up from Mumbai' },
+    { icon: '👋', text: '<strong>A new investor</strong> signed up from Bengaluru' },
+    { icon: '👋', text: '<strong>A new investor</strong> signed up from Delhi' },
+    { icon: '👋', text: '<strong>Someone</strong> just created a Mod Alpha account' }
 ];
 
 function injectActivityToast() {
