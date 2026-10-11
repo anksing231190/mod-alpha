@@ -3,6 +3,8 @@
    Included on all 6 journey pages
    ============================================ */
 
+const MOD_ALPHA_LOGO_SVG = `<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="3.2" height="22" rx="1.2" fill="currentColor"/><rect x="24.8" y="5" width="3.2" height="22" rx="1.2" fill="currentColor"/><text x="16" y="24" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-style="italic" font-weight="700" fill="currentColor" text-anchor="middle">&#945;</text></svg>`;
+
 function getUserName() {
     return localStorage.getItem('modAlphaUserName') || 'Investor';
 }
@@ -37,7 +39,7 @@ function navHTML() {
     return `
 <nav class="topnav">
     <a href="page-1-home.html" class="brand">
-        <span class="brand-icon">⚡</span>
+        <span class="brand-icon">${MOD_ALPHA_LOGO_SVG}</span>
         <span>Mod Alpha</span>
     </a>
     <div class="topnav-links">
@@ -46,7 +48,6 @@ function navHTML() {
         <a href="page-6-ai-insights-chat.html">AI Insights</a>
     </div>
     <div class="topnav-right">
-        <div class="search-box">🔍 Search funds...</div>
         <div class="icon-btn">🔔</div>
         <div class="user-menu-wrap">
             <div class="icon-btn" id="userMenuBtn" title="${getUserName()}">${getUserInitial()}</div>
