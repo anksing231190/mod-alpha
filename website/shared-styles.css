@@ -36,17 +36,17 @@
 /* Default (no attribute) = Dark, defined above. */
 
 :root[data-theme="light"] {
-    --bg: #f4f6fb;
-    --bg-alt: #ffffff;
-    --nav-bg: rgba(244, 246, 251, 0.85);
+    --bg: #e8edf6;
+    --bg-alt: #f1f4fa;
+    --nav-bg: rgba(232, 237, 246, 0.85);
     --card: #ffffff;
-    --card-alt: #f7f9fc;
-    --card-hover: #eef1f8;
-    --border: #e2e6f0;
-    --border-light: #c9d0e3;
+    --card-alt: #f5f8fc;
+    --card-hover: #e9eef7;
+    --border: #d7deeb;
+    --border-light: #b9c3d9;
     --text: #0f172a;
     --text-dim: #475569;
-    --text-faint: #94a3b8;
+    --text-faint: #8893a8;
 }
 
 html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
