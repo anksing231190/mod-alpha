@@ -236,6 +236,16 @@
         display: flex; align-items: center; gap: 0.6rem;
         background: var(--bg-alt); border: 1px solid var(--border); border-radius: 9px;
         padding: 0.5rem 0.7rem;
+        animation: scanGlowBlue 5s ease-in-out infinite;
+    }
+    .pi-item:nth-child(1) { animation-delay: 0s; }
+    .pi-item:nth-child(2) { animation-delay: 0.25s; }
+    .pi-item:nth-child(3) { animation-delay: 0.5s; }
+    .pi-item:nth-child(4) { animation-delay: 0.75s; }
+    .pi-item:nth-child(5) { animation-delay: 1s; }
+    @keyframes scanGlowBlue {
+        0%, 20%, 100% { border-color: var(--border); box-shadow: none; }
+        8% { border-color: var(--blue); box-shadow: 0 0 14px rgba(79,127,255,0.35); }
     }
     .pi-icon { font-size: 1rem; flex-shrink: 0; }
     .pi-title { font-size: 0.72rem; font-weight: 700; color: var(--text); line-height: 1.2; }
@@ -264,10 +274,42 @@
         background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green);
         font-size: 0.68rem; font-weight: 700; text-align: center;
         padding: 0.4rem 0.5rem; border-radius: 7px;
+        animation: scanGlowGreen 5s ease-in-out infinite;
+    }
+    .pf-pill:nth-child(1) { animation-delay: 1.5s; }
+    .pf-pill:nth-child(2) { animation-delay: 1.65s; }
+    .pf-pill:nth-child(3) { animation-delay: 1.8s; }
+    .pf-pill:nth-child(4) { animation-delay: 1.95s; }
+    .pf-pill:nth-child(5) { animation-delay: 2.1s; }
+    .pf-pill:nth-child(6) { animation-delay: 2.25s; }
+    @keyframes scanGlowGreen {
+        0%, 10%, 100% { box-shadow: none; transform: scale(1); }
+        5% { box-shadow: 0 0 14px rgba(34,197,94,0.55); transform: scale(1.05); }
     }
 
     .pipeline-arrow { width: 50px; height: 20px; flex-shrink: 0; }
-    .pipeline-arrow svg { width: 100%; height: 100%; }
+    .pipeline-arrow svg { width: 100%; height: 100%; overflow: visible; }
+    .pipeline-arrow .flow-line { animation: dashFlow 0.7s linear infinite; }
+    .pipeline-arrow .flow-dot { animation: dotTravel 1.8s ease-in-out infinite; filter: drop-shadow(0 0 4px currentColor); }
+    .pipeline-arrow:nth-of-type(2) .flow-dot { animation-delay: 0.3s; }
+    .pipeline-arrow:nth-of-type(3) .flow-dot { animation-delay: 1.6s; }
+    .pipeline-arrow:nth-of-type(4) .flow-dot { animation-delay: 3.1s; }
+    @keyframes dashFlow { to { stroke-dashoffset: -16; } }
+    @keyframes dotTravel {
+        0% { transform: translateX(0); opacity: 0; }
+        12% { opacity: 1; }
+        85% { opacity: 1; }
+        100% { transform: translateX(78px); opacity: 0; }
+    }
+
+    .pn-icon-wrap.green { animation: bellRing 5s ease-in-out infinite; }
+    @keyframes bellRing {
+        0%, 86%, 100% { transform: rotate(0deg); }
+        88% { transform: rotate(-10deg); }
+        90% { transform: rotate(10deg); }
+        92% { transform: rotate(-6deg); }
+        94% { transform: rotate(0deg); }
+    }
 
     .pipeline-caps {
         display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;
@@ -452,52 +494,6 @@
         </div>
     </section>
 
-    <!-- HOW IT WORKS -->
-    <section>
-        <div class="hiw-card">
-            <div class="hiw-step">
-                <div class="hiw-icon-wrap step-1">
-                    <span class="hiw-num">01</span>
-                    <div class="hiw-icon">🧭</div>
-                </div>
-                <h4>Explore</h4>
-                <p>Browse funds & track performance</p>
-            </div>
-
-            <div class="hiw-arrow">
-                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
-                    <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-
-            <div class="hiw-step">
-                <div class="hiw-icon-wrap step-2 dark">
-                    <span class="hiw-num">02</span>
-                    <div class="hiw-icon"><svg class="ai-spark-icon" style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c.43 0 .8.3.88.73l1.2 6.2 6.2 1.2a.9.9 0 010 1.74l-6.2 1.2-1.2 6.2a.9.9 0 01-1.76 0l-1.2-6.2-6.2-1.2a.9.9 0 010-1.74l6.2-1.2 1.2-6.2A.9.9 0 0112 2z" fill="currentColor"/><circle cx="19" cy="5" r="1.4" fill="currentColor"/></svg></div>
-                </div>
-                <h4>Mod Alpha AI</h4>
-                <p>Analyzes fund data, picks your best SIP date</p>
-            </div>
-
-            <div class="hiw-arrow">
-                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
-                    <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-
-            <div class="hiw-step">
-                <div class="hiw-icon-wrap step-3">
-                    <span class="hiw-num">03</span>
-                    <div class="hiw-icon">🔔</div>
-                </div>
-                <h4>Get Notified</h4>
-                <p>Invest on the best day, on your own broker app</p>
-            </div>
-        </div>
-    </section>
-
     <!-- AI ENGINE PIPELINE -->
     <section>
         <h2 class="section-title">How the AI Engine Works</h2>
@@ -515,8 +511,9 @@
 
                 <div class="pipeline-arrow">
                     <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                        <line class="flow-line" x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
                         <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle class="flow-dot" cx="4" cy="10" r="2.5" fill="var(--blue)" color="var(--blue)" />
                     </svg>
                 </div>
 
@@ -527,8 +524,9 @@
 
                 <div class="pipeline-arrow">
                     <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                        <line class="flow-line" x1="2" y1="10" x2="88" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
                         <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle class="flow-dot" cx="4" cy="10" r="2.5" fill="var(--blue)" color="var(--blue)" />
                     </svg>
                 </div>
 
@@ -542,8 +540,9 @@
 
                 <div class="pipeline-arrow">
                     <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                        <line class="flow-line" x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
                         <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle class="flow-dot" cx="4" cy="10" r="2.5" fill="var(--green)" color="var(--green)" />
                     </svg>
                 </div>
 
@@ -558,8 +557,9 @@
 
                 <div class="pipeline-arrow">
                     <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                        <line x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                        <line class="flow-line" x1="2" y1="10" x2="88" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
                         <path d="M82,4 L90,10 L82,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <circle class="flow-dot" cx="4" cy="10" r="2.5" fill="var(--green)" color="var(--green)" />
                     </svg>
                 </div>
 
@@ -578,7 +578,6 @@
             </div>
         </div>
 
-        <p style="text-align:center; font-size:0.78rem; color:var(--text-faint); margin-top:1rem;">Mod Alpha analyzes public fund data only — it never reads your bank or demat account, and never places trades.</p>
     </section>
 
     <!-- PRICING TEASER -->
