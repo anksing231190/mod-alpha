@@ -127,20 +127,20 @@
 <script src="shared-widgets.js"></script>
 <script>
 const FUNDS = [
-    { name: 'Quant Small Cap Fund - Direct Growth', tags: ['Equity','Small Cap'], cagr5y: 32.4, icon: '🔺', color: 'linear-gradient(135deg,#f59e0b,#ef4444)', best: true },
-    { name: 'SBI Contra Fund - Direct Growth', tags: ['Equity','Contra'], cagr5y: 28.1, icon: '🔵', color: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' },
-    { name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth', tags: ['Equity','Mid Cap'], cagr5y: 26.8, icon: '🔴', color: 'linear-gradient(135deg,#ef4444,#991b1b)' },
-    { name: 'Parag Parikh Flexi Cap Fund - Direct Growth', tags: ['Equity','Flexi Cap'], cagr5y: 24.1, icon: '🟢', color: 'linear-gradient(135deg,#22c55e,#15803d)' },
-    { name: 'Nippon India Large Cap Fund - Direct Growth', tags: ['Equity','Large Cap'], cagr5y: 18.6, icon: '🟣', color: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' },
-    { name: 'Axis Midcap 150 Fund - Direct Growth', tags: ['Equity','Mid Cap'], cagr5y: 22.3, icon: '🟠', color: 'linear-gradient(135deg,#f97316,#c2410c)' },
-    { name: 'ICICI Prudential Hybrid Equity Fund', tags: ['Hybrid'], cagr5y: 15.2, icon: '🔷', color: 'linear-gradient(135deg,#06b6d4,#0e7490)' },
-    { name: 'Mirae Asset Nifty 50 Index Fund', tags: ['Equity','Index'], cagr5y: 18.5, icon: '⚪', color: 'linear-gradient(135deg,#64748b,#334155)' }
+    { key: 'quant', name: 'Quant Small Cap Fund - Direct Growth', tags: ['Equity','Small Cap'], cagr5y: 32.4, icon: '🔺', color: 'linear-gradient(135deg,#f59e0b,#ef4444)', best: true },
+    { key: 'sbi', name: 'SBI Contra Fund - Direct Growth', tags: ['Equity','Contra'], cagr5y: 28.1, icon: '🔵', color: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' },
+    { key: 'hdfc', name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth', tags: ['Equity','Mid Cap'], cagr5y: 26.8, icon: '🔴', color: 'linear-gradient(135deg,#ef4444,#991b1b)' },
+    { key: 'parag', name: 'Parag Parikh Flexi Cap Fund - Direct Growth', tags: ['Equity','Flexi Cap'], cagr5y: 24.1, icon: '🟢', color: 'linear-gradient(135deg,#22c55e,#15803d)' },
+    { key: 'nippon', name: 'Nippon India Large Cap Fund - Direct Growth', tags: ['Equity','Large Cap'], cagr5y: 18.6, icon: '🟣', color: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' },
+    { key: 'midcap', name: 'Axis Midcap 150 Fund - Direct Growth', tags: ['Equity','Mid Cap'], cagr5y: 22.3, icon: '🟠', color: 'linear-gradient(135deg,#f97316,#c2410c)' },
+    { key: 'hybrid', name: 'ICICI Prudential Hybrid Equity Fund', tags: ['Hybrid'], cagr5y: 15.2, icon: '🔷', color: 'linear-gradient(135deg,#06b6d4,#0e7490)' },
+    { key: 'nifty', name: 'Mirae Asset Nifty 50 Index Fund', tags: ['Equity','Index'], cagr5y: 18.5, icon: '⚪', color: 'linear-gradient(135deg,#64748b,#334155)' }
 ];
 
 function renderFunds(list) {
     const container = document.getElementById('fundList');
     container.innerHTML = list.map(f => `
-        <a href="page-3-performance-analytics.html" class="fund-row ${f.best ? 'best' : ''}">
+        <a href="page-3-performance-analytics.html?fund=${f.key}" class="fund-row ${f.best ? 'best' : ''}">
             ${f.best ? '<div class="best-badge">🏆 Top Pick</div>' : ''}
             <div class="fund-tile-top">
                 <div class="fund-icon" style="background:${f.color}22; color: #fff;">${f.icon}</div>

@@ -33,6 +33,7 @@
         display: none;
         position: absolute; top: calc(100% + 8px); right: 0;
         width: 320px; max-width: 85vw;
+        max-height: 340px; overflow-y: auto;
         background: var(--card); border: 1px solid var(--border-light);
         border-radius: 12px; padding: 0.5rem;
         box-shadow: 0 16px 48px rgba(0,0,0,0.35);
@@ -74,7 +75,7 @@
     <div class="fund-header">
         <div>
             <h1 id="fundTitle">Quant Small Cap Fund - Direct Growth</h1>
-            <div class="tags">
+            <div class="tags" id="fundTags">
                 <span class="pill pill-blue">Equity</span>
                 <span class="pill pill-purple">Small Cap</span>
             </div>
@@ -142,7 +143,7 @@ const FUND_DATA = {
         insight: "The fund has shown strong positive momentum with 8 of last 12 months delivering positive returns. Recent performance is 12% above its category average."
     },
     nifty: {
-        name: 'Nifty 50 Index Fund - Direct Growth', tags: ['Equity','Index'],
+        name: 'Mirae Asset Nifty 50 Index Fund', tags: ['Equity','Index'],
         cagr5y: 18.5, cagr3y: 15.2, ret1y: 18.5, nav: 24560,
         monthly: [1.2,1.8,0.8,2.1,-0.5,1.9,-0.2,1.5,1.3,2.3,1.1,2.8],
         quarterly: [3.2,2.8,5.1,4.2,3.8,2.9,4.5,3.1],
@@ -164,10 +165,48 @@ const FUND_DATA = {
         quarterly: [2.1,1.9,3.2,2.8,2.3,1.8,2.9,2.1],
         yearly: [8.5,10.2,12.1],
         insight: "This hybrid fund shows the lowest volatility in its category, making it suitable for conservative SIP investors seeking stable, steady growth."
+    },
+    sbi: {
+        name: 'SBI Contra Fund - Direct Growth', tags: ['Equity','Contra'],
+        cagr5y: 28.1, cagr3y: 21.5, ret1y: 16.8, nav: 68540,
+        monthly: [2.1,-0.8,3.9,3.1,-1.2,2.4,3.6,-1.5,3.2,2.8,3.9,2.5],
+        quarterly: [7.8,6.2,9.1,7.4,8.2,5.6,9.8,7.1],
+        yearly: [16.2,21.5,28.1],
+        insight: "This contrarian fund has historically outperformed during market corrections, showing resilience when growth-focused peers declined."
+    },
+    hdfc: {
+        name: 'HDFC Mid-Cap Opportunities Fund - Direct Growth', tags: ['Equity','Mid Cap'],
+        cagr5y: 26.8, cagr3y: 20.2, ret1y: 19.4, nav: 142680,
+        monthly: [1.8,2.4,-0.9,3.2,2.6,-0.3,2.9,2.1,3.4,-1.1,3.6,2.2],
+        quarterly: [6.9,5.8,8.4,6.7,7.5,5.1,8.9,6.4],
+        yearly: [15.1,20.2,26.8],
+        insight: "HDFC Mid-Cap has shown consistent outperformance versus its benchmark across multiple cycles, with particularly strong Q3 results."
+    },
+    parag: {
+        name: 'Parag Parikh Flexi Cap Fund - Direct Growth', tags: ['Equity','Flexi Cap'],
+        cagr5y: 24.1, cagr3y: 18.9, ret1y: 17.2, nav: 78920,
+        monthly: [1.5,1.9,0.6,2.5,2.0,-0.2,2.2,1.6,2.7,0.8,2.9,1.7],
+        quarterly: [5.8,5.2,7.1,5.9,6.4,4.8,7.5,5.6],
+        yearly: [13.8,18.9,24.1],
+        insight: "This flexi-cap fund's diversified mandate across market caps has delivered more consistent returns with lower volatility than pure small/mid-cap peers."
+    },
+    nippon: {
+        name: 'Nippon India Large Cap Fund - Direct Growth', tags: ['Equity','Large Cap'],
+        cagr5y: 18.6, cagr3y: 14.8, ret1y: 13.5, nav: 89240,
+        monthly: [0.9,1.3,0.4,1.8,1.4,-0.1,1.5,1.1,1.9,0.5,2.0,1.2],
+        quarterly: [4.1,3.6,5.2,4.3,4.6,3.4,5.5,4.0],
+        yearly: [10.9,14.8,18.6],
+        insight: "As a large-cap fund, Nippon India shows the lowest volatility in this comparison set, suitable for conservative long-term SIP investors."
     }
 };
 
-let currentFundKey = 'quant';
+function getFundKeyFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get('fund');
+    return (key && FUND_DATA[key]) ? key : 'quant';
+}
+
+let currentFundKey = getFundKeyFromUrl();
 let currentPeriod = 'monthly';
 let chartInstance;
 
@@ -243,6 +282,9 @@ function switchFund(key) {
     currentFundKey = key;
     const f = FUND_DATA[key];
     document.getElementById('fundTitle').textContent = f.name;
+    document.getElementById('fundTags').innerHTML = f.tags.map((t, i) =>
+        `<span class="pill ${i === 0 ? 'pill-blue' : 'pill-purple'}">${t}</span>`
+    ).join('');
     renderTopMetrics(f);
     renderChart();
     renderFundSwitchDropdown();
@@ -250,7 +292,8 @@ function switchFund(key) {
 
 function renderFundSwitchDropdown() {
     const dropdown = document.getElementById('fundSwitchDropdown');
-    dropdown.innerHTML = Object.keys(FUND_DATA).map(key => {
+    const sortedKeys = Object.keys(FUND_DATA).sort((a, b) => FUND_DATA[b].cagr5y - FUND_DATA[a].cagr5y);
+    dropdown.innerHTML = sortedKeys.map(key => {
         const f = FUND_DATA[key];
         return `<div class="fsd-item ${key === currentFundKey ? 'active' : ''}" data-key="${key}">
             <span class="fsd-name">${f.name}</span>
@@ -293,9 +336,7 @@ function switchPeriod(period, el) {
 }
 
 window.addEventListener('load', () => {
-    renderTopMetrics(FUND_DATA[currentFundKey]);
-    renderChart();
-    renderFundSwitchDropdown();
+    switchFund(currentFundKey);
 });
 </script>
 </body>
