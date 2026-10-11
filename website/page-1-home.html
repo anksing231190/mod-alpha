@@ -40,19 +40,28 @@
         background: var(--card); border: 1px solid var(--border); border-radius: 20px;
         padding: 2rem;
     }
-    .js-tabs { display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 2rem; flex-wrap: wrap; }
-    .js-tab {
-        display: flex; align-items: center; gap: 0.5rem;
-        background: var(--bg-alt); border: 1px solid var(--border); color: var(--text-dim);
-        padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.82rem; font-weight: 700;
-        cursor: pointer; transition: all 0.25s;
+    .js-tabs { display: flex; align-items: flex-start; justify-content: center; margin-bottom: 2.2rem; flex-wrap: wrap; }
+    .js-tab { display: flex; flex-direction: column; align-items: center; text-align: center; width: 128px; cursor: pointer; }
+    .js-tab-icon-wrap {
+        position: relative; width: 54px; height: 54px; border-radius: 15px;
+        background: rgba(79,127,255,0.12); display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; margin-bottom: 0.7rem; transition: all 0.3s;
     }
-    .js-tab .jst-num {
-        width: 20px; height: 20px; border-radius: 50%; background: var(--border); color: var(--text-faint);
-        display: flex; align-items: center; justify-content: center; font-size: 0.68rem; flex-shrink: 0;
+    .js-tab-num {
+        position: absolute; top: -9px; right: -10px; font-size: 0.74rem; font-weight: 700; font-style: italic;
+        color: var(--blue-light);
     }
-    .js-tab.active { background: var(--gradient-brand); color: #fff; border-color: transparent; }
-    .js-tab.active .jst-num { background: rgba(255,255,255,0.25); color: #fff; }
+    .js-tab-title { font-size: 0.86rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+    .js-tab-sub { font-size: 0.7rem; color: var(--text-faint); }
+    .js-tab.active .js-tab-icon-wrap { background: var(--gradient-brand); color: #fff; box-shadow: var(--glow-blue); }
+    .js-tab.active .js-tab-num { color: var(--purple-light); }
+    .js-tab-arrow { width: 56px; height: 20px; flex-shrink: 0; margin-top: 17px; }
+    .js-tab-arrow svg { width: 100%; height: 100%; overflow: visible; }
+
+    @media (max-width: 640px) {
+        .js-tab-arrow { display: none; }
+        .js-tab { width: auto; }
+    }
 
     .js-stage { position: relative; min-height: 300px; }
     .js-slide {
@@ -484,9 +493,33 @@
 
         <div class="journey-slide-card">
             <div class="js-tabs" id="journeySlideTabs">
-                <div class="js-tab active"><span class="jst-num">1</span> Explore</div>
-                <div class="js-tab"><span class="jst-num">2</span> Subscribe</div>
-                <div class="js-tab"><span class="jst-num">3</span> Get Notified</div>
+                <div class="js-tab active">
+                    <div class="js-tab-icon-wrap"><span class="js-tab-num">01</span>🔍</div>
+                    <div class="js-tab-title">Explore</div>
+                    <div class="js-tab-sub">Browse funds</div>
+                </div>
+                <div class="js-tab-arrow">
+                    <svg viewBox="0 0 56 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="44" y2="10" stroke="var(--blue)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M38,4 L46,10 L38,16" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="js-tab">
+                    <div class="js-tab-icon-wrap"><span class="js-tab-num">02</span>💳</div>
+                    <div class="js-tab-title">Subscribe</div>
+                    <div class="js-tab-sub">Pick a plan</div>
+                </div>
+                <div class="js-tab-arrow">
+                    <svg viewBox="0 0 56 20" preserveAspectRatio="none">
+                        <line x1="2" y1="10" x2="44" y2="10" stroke="var(--green)" stroke-width="2" stroke-dasharray="5,5" />
+                        <path d="M38,4 L46,10 L38,16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div class="js-tab">
+                    <div class="js-tab-icon-wrap"><span class="js-tab-num">03</span>🔔</div>
+                    <div class="js-tab-title">Get Notified</div>
+                    <div class="js-tab-sub">Invest on time</div>
+                </div>
             </div>
 
             <div class="js-stage" id="journeySlideStage">
