@@ -206,13 +206,14 @@ function sendWidgetMessage(predefined) {
 }
 
 /* ===== ACTIVITY TOAST (bottom-left, simulated — not real user events) ===== */
-const ACTIVITY_MESSAGES = [
-    { icon: '👋', text: '<strong>Someone</strong> just joined Mod Alpha' },
-    { icon: '👋', text: '<strong>A new investor</strong> signed up from Mumbai' },
-    { icon: '👋', text: '<strong>A new investor</strong> signed up from Bengaluru' },
-    { icon: '👋', text: '<strong>A new investor</strong> signed up from Delhi' },
-    { icon: '👋', text: '<strong>Someone</strong> just created a Mod Alpha account' }
-];
+const ACTIVITY_NAMES = ['Priya', 'Arjun', 'Ananya', 'Rohan', 'Sneha', 'Vikram', 'Kavya', 'Aditya', 'Meera', 'Karan', 'Ishita', 'Rahul', 'Divya', 'Nikhil'];
+const ACTIVITY_CITIES = ['Mumbai', 'Bengaluru', 'Delhi', 'Pune', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad', 'Jaipur', 'Kochi'];
+
+function getRandomActivityMessage() {
+    const name = ACTIVITY_NAMES[Math.floor(Math.random() * ACTIVITY_NAMES.length)];
+    const city = ACTIVITY_CITIES[Math.floor(Math.random() * ACTIVITY_CITIES.length)];
+    return { icon: '👋', text: `<strong>${name}</strong> from ${city} just joined Mod Alpha` };
+}
 
 function injectActivityToast() {
     const mount = document.createElement('div');
@@ -228,7 +229,7 @@ function injectActivityToast() {
 function showActivityToast() {
     const toast = document.getElementById('activityToast');
     if (!toast) return;
-    const msg = ACTIVITY_MESSAGES[Math.floor(Math.random() * ACTIVITY_MESSAGES.length)];
+    const msg = getRandomActivityMessage();
     document.getElementById('activityToastIcon').textContent = msg.icon;
     document.getElementById('activityToastText').innerHTML = msg.text;
     toast.classList.add('show');
