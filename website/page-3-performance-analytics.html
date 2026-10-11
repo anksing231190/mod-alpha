@@ -17,15 +17,36 @@
 
     .section-tabs { margin-bottom: 1.5rem; }
 
-    .fund-selector-inline {
-        display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; flex-wrap: wrap;
-        background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-        padding: 0.8rem 1.1rem;
+    /* ===== Custom fund-switch dropdown (replaces native <select>) ===== */
+    .fund-switch-wrap { position: relative; }
+    .fund-switch-btn {
+        display: flex; align-items: center; gap: 0.6rem;
+        background: var(--card); border: 1px solid var(--border-light);
+        color: var(--text); padding: 0.65rem 1rem; border-radius: 9px;
+        font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.25s;
     }
-    .fund-selector-inline select {
-        flex: 1; min-width: 0; background: transparent; border: none; color: var(--text);
-        font-size: 0.9rem; outline: none; cursor: pointer;
+    .fund-switch-btn:hover { border-color: var(--blue); }
+    .fund-switch-btn svg { transition: transform 0.25s; flex-shrink: 0; }
+    .fund-switch-btn.open svg { transform: rotate(180deg); }
+
+    .fund-switch-dropdown {
+        display: none;
+        position: absolute; top: calc(100% + 8px); right: 0;
+        width: 320px; max-width: 85vw;
+        background: var(--card); border: 1px solid var(--border-light);
+        border-radius: 12px; padding: 0.5rem;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+        z-index: 50;
     }
+    .fund-switch-dropdown.open { display: block; animation: userMenuIn 0.18s ease-out; }
+    .fsd-item {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+        padding: 0.75rem 0.8rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .fsd-item:hover { background: var(--bg-alt); }
+    .fsd-item.active { background: rgba(79,127,255,0.12); }
+    .fsd-name { font-size: 0.85rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+    .fsd-cagr { font-size: 0.82rem; font-weight: 700; color: var(--green); flex-shrink: 0; white-space: nowrap; }
 
     .top-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
     .top-metric { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; }
@@ -50,16 +71,6 @@
 <div id="navMount"></div>
 
 <div class="page">
-    <div class="fund-selector-inline">
-        <select id="fundSwitcher" onchange="switchFund(this.value)">
-            <option value="quant">Quant Small Cap Fund - Direct Growth</option>
-            <option value="nifty">Nifty 50 Index Fund - Direct Growth</option>
-            <option value="midcap">Axis Midcap 150 Fund - Direct Growth</option>
-            <option value="hybrid">ICICI Prudential Hybrid Equity Fund</option>
-        </select>
-        <a href="page-2-fund-selection.html" style="font-size:0.8rem; color: var(--blue-light);">Change fund →</a>
-    </div>
-
     <div class="fund-header">
         <div>
             <h1 id="fundTitle">Quant Small Cap Fund - Direct Growth</h1>
@@ -67,6 +78,13 @@
                 <span class="pill pill-blue">Equity</span>
                 <span class="pill pill-purple">Small Cap</span>
             </div>
+        </div>
+        <div class="fund-switch-wrap">
+            <button class="fund-switch-btn" id="fundSwitchBtn">
+                <span>Switch Fund</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="fund-switch-dropdown" id="fundSwitchDropdown"></div>
         </div>
     </div>
 
@@ -227,7 +245,44 @@ function switchFund(key) {
     document.getElementById('fundTitle').textContent = f.name;
     renderTopMetrics(f);
     renderChart();
+    renderFundSwitchDropdown();
 }
+
+function renderFundSwitchDropdown() {
+    const dropdown = document.getElementById('fundSwitchDropdown');
+    dropdown.innerHTML = Object.keys(FUND_DATA).map(key => {
+        const f = FUND_DATA[key];
+        return `<div class="fsd-item ${key === currentFundKey ? 'active' : ''}" data-key="${key}">
+            <span class="fsd-name">${f.name}</span>
+            <span class="fsd-cagr">${f.cagr5y}%</span>
+        </div>`;
+    }).join('');
+    dropdown.querySelectorAll('.fsd-item').forEach(item => {
+        item.addEventListener('click', () => {
+            switchFund(item.dataset.key);
+            closeFundSwitchDropdown();
+        });
+    });
+}
+
+function closeFundSwitchDropdown() {
+    document.getElementById('fundSwitchDropdown').classList.remove('open');
+    document.getElementById('fundSwitchBtn').classList.remove('open');
+}
+
+document.getElementById('fundSwitchBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('fundSwitchDropdown').classList.toggle('open');
+    document.getElementById('fundSwitchBtn').classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('fundSwitchDropdown');
+    const btn = document.getElementById('fundSwitchBtn');
+    if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+        closeFundSwitchDropdown();
+    }
+});
 
 function switchPeriod(period, el) {
     currentPeriod = period;
@@ -240,6 +295,7 @@ function switchPeriod(period, el) {
 window.addEventListener('load', () => {
     renderTopMetrics(FUND_DATA[currentFundKey]);
     renderChart();
+    renderFundSwitchDropdown();
 });
 </script>
 </body>
