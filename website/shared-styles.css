@@ -79,13 +79,22 @@ a { color: inherit; text-decoration: none; }
     position: sticky;
     top: 0;
     z-index: 200;
-    background: var(--nav-bg);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--border);
     padding: 0.9rem 2rem;
     display: flex;
     align-items: center;
     gap: 2rem;
+}
+/* backdrop-filter lives on a pseudo-element, not the sticky box itself —
+   filter/backdrop-filter directly on a position:sticky element is a known
+   Safari bug that breaks the stickiness during scroll. */
+.topnav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
 }
 
 .topnav .brand {
