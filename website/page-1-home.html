@@ -198,14 +198,16 @@
         flex: 1 1 calc((100% - 4.5rem) / 4);
         max-width: calc((100% - 4.5rem) / 4);
     }
+    .journey-card-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.9rem; }
     .journey-num {
-        width: 38px; height: 38px; border-radius: 10px;
+        width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
         background: var(--card-alt); border: 1px solid var(--border);
         display: flex; align-items: center; justify-content: center;
-        font-size: 1.1rem; margin-bottom: 1rem;
+        font-size: 1.1rem;
     }
+    .journey-num svg { width: 58%; height: 58%; }
     .journey-card.ai .journey-num { border-color: rgba(139,92,246,0.35); background: rgba(139,92,246,0.1); }
-    .journey-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .journey-card h3 { font-size: 1rem; margin-bottom: 0; }
     .journey-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1rem; }
 
     /* ===== MINI ANIMATED PREVIEWS ===== */
@@ -591,8 +593,10 @@
 
         <div class="journey-grid">
             <a href="page-2-fund-selection.html" class="card card-interactive journey-card">
-                <div class="journey-num">🔍</div>
-                <h3>Fund Selection & Overview</h3>
+                <div class="journey-card-head">
+                    <div class="journey-num">🔍</div>
+                    <h3>Fund Selection & Overview</h3>
+                </div>
                 <div class="card-preview">
                     <div class="preview-search-bar">🔍 Search funds...<span class="preview-cursor"></span></div>
                     <div class="preview-rows">
@@ -603,8 +607,10 @@
                 <p>Searchable fund selector with key info and AI-generated summary.</p>
             </a>
             <a href="page-4-time-machine.html" class="card card-interactive journey-card">
-                <div class="journey-num">⏰</div>
-                <h3>What If I Invested on This Date?</h3>
+                <div class="journey-card-head">
+                    <div class="journey-num">⏰</div>
+                    <h3>What If I Invested on This Date?</h3>
+                </div>
                 <div class="card-preview">
                     <div class="preview-growth">
                         <svg viewBox="0 0 200 50" preserveAspectRatio="none">
@@ -622,8 +628,10 @@
                 <p>Interactive investment simulator with a date picker and growth chart.</p>
             </a>
             <a href="page-5-mod-alpha.html" class="card card-interactive journey-card ai">
-                <div class="journey-num">🤖</div>
-                <h3>MOD Alpha — Intelligent SIP Analysis</h3>
+                <div class="journey-card-head">
+                    <div class="journey-num"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="modAlphaGoldGradCard" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3d576"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#a9790a"/></linearGradient></defs><rect x="4" y="5" width="3.2" height="22" rx="1.2" fill="url(#modAlphaGoldGradCard)"/><rect x="24.8" y="5" width="3.2" height="22" rx="1.2" fill="url(#modAlphaGoldGradCard)"/><text x="16" y="24" font-family="Georgia, 'Times New Roman', serif" font-size="19" font-style="italic" font-weight="700" fill="url(#modAlphaGoldGradCard)" text-anchor="middle">&#945;</text></svg></div>
+                    <h3>MOD Alpha — Intelligent SIP Analysis</h3>
+                </div>
                 <div class="card-preview">
                     <div class="preview-compare">
                         <div class="preview-compare-col"><div class="preview-compare-bar fixed"></div><span class="preview-compare-lbl">Fixed</span></div>
@@ -633,8 +641,10 @@
                 <p>Compare traditional fixed-date SIP vs. AI-optimized investment dates.</p>
             </a>
             <a href="page-6-ai-insights-chat.html" class="card card-interactive journey-card ai">
-                <div class="journey-num">💬</div>
-                <h3>AI Insights &amp; Chat</h3>
+                <div class="journey-card-head">
+                    <div class="journey-num">💬</div>
+                    <h3>AI Insights &amp; Chat</h3>
+                </div>
                 <div class="card-preview">
                     <div class="preview-chat">
                         <div class="preview-chat-bubble">Best date to invest this month?</div>
