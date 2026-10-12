@@ -49,6 +49,7 @@ function navHTML() {
         <a href="support.html">Support</a>
     </div>
     <div class="topnav-right">
+        <div class="icon-btn mobile-menu-btn" id="mobileMenuBtn">☰</div>
         <div class="icon-btn">🔔</div>
         <div class="user-menu-wrap">
             <div class="icon-btn" id="userMenuBtn" title="${getUserName()}">${getUserInitial()}</div>
@@ -66,13 +67,19 @@ function navHTML() {
             </div>
         </div>
     </div>
+    <div class="mobile-nav-dropdown" id="mobileNavDropdown">
+        <a href="page-2-fund-selection.html">🔍 Explore</a>
+        <a href="page-6-ai-insights-chat.html">✨ AI Insights</a>
+        <a href="subscription.html">💳 Subscription</a>
+        <a href="support.html">🆘 Support</a>
+    </div>
 </nav>`;
 }
 
 function injectNav() {
     document.getElementById('navMount').innerHTML = navHTML();
     const path = window.location.pathname.split('/').pop();
-    document.querySelectorAll('.topnav-links a').forEach(a => {
+    document.querySelectorAll('.topnav-links a, .mobile-nav-dropdown a').forEach(a => {
         if (a.getAttribute('href') === path) a.classList.add('active');
     });
 
@@ -90,9 +97,20 @@ function injectNav() {
 
     document.getElementById('logoutItem').addEventListener('click', logout);
 
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileDropdown = document.getElementById('mobileNavDropdown');
+
+    mobileMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileDropdown.classList.toggle('open');
+    });
+
     document.addEventListener('click', (e) => {
         if (!dropdown.contains(e.target) && e.target !== menuBtn) {
             dropdown.classList.remove('open');
+        }
+        if (!mobileDropdown.contains(e.target) && e.target !== mobileMenuBtn) {
+            mobileDropdown.classList.remove('open');
         }
     });
 }
@@ -242,11 +260,60 @@ function scheduleActivityToast(delay) {
     setTimeout(showActivityToast, delay);
 }
 
+/* ===== SITE FOOTER ===== */
+const SOCIAL_LINKS = [
+    { name: 'WhatsApp', href: '#', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.35 5.07L2 22l5.07-1.33A9.94 9.94 0 0012 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.2c-.22.62-1.28 1.18-1.77 1.25-.47.07-1.03.1-1.66-.1-.38-.12-.87-.28-1.5-.55-2.64-1.14-4.36-3.8-4.5-3.98-.13-.18-1.08-1.44-1.08-2.75 0-1.3.68-1.95.93-2.22.24-.26.52-.33.7-.33h.5c.16 0 .37-.03.58.44.22.5.75 1.74.82 1.86.07.13.11.28.02.46-.09.18-.14.3-.27.46-.13.16-.28.35-.4.47-.13.13-.27.27-.12.53.16.26.7 1.15 1.5 1.87 1.04.93 1.91 1.21 2.17 1.35.26.13.41.11.56-.07.16-.18.65-.76.83-1.02.18-.26.35-.21.58-.13.24.08 1.5.71 1.76.84.26.13.43.2.5.3.07.1.07.6-.15 1.22z"/></svg>' },
+    { name: 'Twitter / X', href: '#', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22H16.9l-5-6.5-5.7 6.5H2.9l8.1-9.3L2 2h6.6l4.5 6 5.8-6zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20z"/></svg>' },
+    { name: 'Instagram', href: '#', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>' },
+    { name: 'YouTube', href: '#', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 7.2a3 3 0 00-2.1-2.1C19.5 4.5 12 4.5 12 4.5s-7.5 0-9.4.6A3 3 0 00.5 7.2 31.6 31.6 0 000 12a31.6 31.6 0 00.5 4.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31.6 31.6 0 0024 12a31.6 31.6 0 00-.5-4.8zM9.8 15.5V8.5L15.8 12l-6 3.5z"/></svg>' },
+    { name: 'LinkedIn', href: '#', svg: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.07 2.07 0 110-4.13 2.07 2.07 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>' }
+];
+
+function footerHTML() {
+    return `
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <div class="footer-brand-row">
+                <span class="brand-icon">${MOD_ALPHA_LOGO_SVG}</span>
+                <span>Mod Alpha</span>
+            </div>
+            <p>AI-powered SIP timing for smarter mutual fund investing. We analyze fund data, you stay in control.</p>
+            <div class="footer-social">
+                ${SOCIAL_LINKS.map(s => `<a href="${s.href}" title="${s.name}" aria-label="${s.name}">${s.svg}</a>`).join('')}
+            </div>
+        </div>
+        <div class="footer-col">
+            <div class="footer-col-title">Platform</div>
+            <a href="page-2-fund-selection.html">Explore</a>
+            <a href="page-6-ai-insights-chat.html">AI Insights</a>
+            <a href="subscription.html">Subscription</a>
+        </div>
+        <div class="footer-col">
+            <div class="footer-col-title">Help</div>
+            <a href="support.html">Support &amp; FAQs</a>
+            <a href="mailto:support@modalpha.app">Email Us</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>&copy; 2026 Mod Alpha. All rights reserved.</span>
+        <span>SEBI Registered &middot; Notification-only, we never place trades on your behalf.</span>
+    </div>
+</footer>`;
+}
+
+function injectFooter() {
+    const mount = document.createElement('div');
+    mount.innerHTML = footerHTML();
+    document.body.appendChild(mount);
+}
+
 function initPage() {
     if (!requireAuth()) return;
     injectNav();
     injectChatWidget();
     injectActivityToast();
+    injectFooter();
 }
 
 document.addEventListener('DOMContentLoaded', initPage);
