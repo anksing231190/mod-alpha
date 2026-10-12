@@ -110,7 +110,7 @@ a { color: inherit; text-decoration: none; }
 }
 .topnav .brand-icon svg { width: 62%; height: 62%; }
 
-.mobile-menu-btn { display: none; font-size: 1.1rem; }
+.icon-btn.mobile-menu-btn { display: none; font-size: 1.1rem; }
 
 .mobile-nav-dropdown {
     position: absolute; top: calc(100% + 0.5rem); left: 1rem; right: 1rem;
@@ -800,7 +800,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 900px) {
     .topnav-links { display: none; }
     .search-box { display: none; }
-    .mobile-menu-btn { display: flex; }
+    .icon-btn.mobile-menu-btn { display: flex; }
 }
 
 @media (max-width: 640px) {
